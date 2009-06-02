@@ -4,7 +4,7 @@
 
 = Basic Design Principle =
 
-Add your content here.
+This is a Task controlling framework which is based on Java Concurrent Framework. All the tasks can be divided into three kinds of Task. The Quantifiable Task, the Predictable Task, and the Non-Quantifiable Task. Each Task can be executed by the Java Concurrent Framework Executor. The central controller provides the Executor to execute the Task and the all the task can be persisted into a Database via a simple persistence API which can be implemented by JDBC and other persistence methods. Users can also restore the tasks from database after they make any task stop.
 
 
 = Details =
