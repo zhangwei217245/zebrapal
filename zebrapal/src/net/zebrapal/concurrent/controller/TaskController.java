@@ -19,6 +19,7 @@ import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
 public class TaskController {
     
     private ScheduledExecutorService executor;
+    
     private ConcurrentMap<IWorkTask,RunnableScheduledFuture> workerMap;
 
     private ITaskPersistenceManager taskPersistManager;
@@ -78,16 +79,24 @@ public class TaskController {
     }
 
     /**
-     * Cancel a Task forcibly.
+     * Cancel a Task forcibly. In this situation, the task persistence manager will not persist this task.
+     * If a task need to be persisted after the controller stops its work, please call the stop method.
      * @param task
      * @return
      */
     public boolean cancelTask(IWorkTask task){
-        if(!workerMap.get(task).isCancelled()){
-
-            remove(task);
+        try {
+            if(!workerMap.get(task).isCancelled()){
+                remove(task);
+            }else{
+                workerMap.get(task).cancel(true);
+                remove(task);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
 
@@ -96,7 +105,7 @@ public class TaskController {
      * @param command
      * @return
      */
-    public boolean remove(IWorkTask command){
+    private boolean remove(IWorkTask command){
 
         workerMap.remove(command);
         return ((ScheduledThreadPoolExecutor)executor).remove(command);
