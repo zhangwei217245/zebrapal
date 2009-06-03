@@ -21,8 +21,10 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                 atomOperation.skip(completeCount);
                 taskState = TaskState.RUNNING;
             }
-            while(taskState.equals(TaskState.CREATED)||taskState.equals(TaskState.RUNNING) ){
-                
+            while(taskState.equals(TaskState.CREATED)||taskState.equals(TaskState.RUNNING)||taskState.equals(TaskState.SLEEP)){
+                if(taskState.equals(TaskState.SLEEP)){
+                    continue;
+                }
                 try {
                     atomOperation.execute();
                     

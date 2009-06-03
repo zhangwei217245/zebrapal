@@ -76,6 +76,7 @@ public class TaskController {
     public void hibernate(IWorkTask task){
         try {
             task.setTaskState(TaskState.HIBERNATE);
+            taskPersistManager.updateTaskInfo(task);
         } catch (Exception e) {
             e.printStackTrace();
         }
