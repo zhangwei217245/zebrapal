@@ -119,6 +119,19 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
             return false;
         }else if(taskState.equals(TaskState.CRASHED)){
             //write disk
+            try {
+                atomOperation.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }else if(taskState.equals(TaskState.CANCELLED)){
+            //write disk
+            try {
+                atomOperation.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return false;
         }else if(taskState.equals(TaskState.FINISHED)){
             //write disk
