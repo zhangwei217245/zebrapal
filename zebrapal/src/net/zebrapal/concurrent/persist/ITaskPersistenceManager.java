@@ -7,16 +7,16 @@ package net.zebrapal.concurrent.persist;
 
 import java.util.List;
 import net.zebrapal.concurrent.task.AbstractWorkTask;
+import net.zebrapal.concurrent.task.IWorkTask;
 
 /**
  *
  * @author X-Spirit
  */
 public interface ITaskPersistenceManager {
-    public void createTaskInfo(AbstractWorkTask task);
-    public void updateTaskInfo(AbstractWorkTask task);
-    public List<AbstractWorkTask> queryTaskInfo();
-    public void deleteTaskInfo(AbstractWorkTask task);
-    public AbstractWorkTask readTaskInfo();
-    
+    public void createTaskInfo(IWorkTask task);
+    public void updateTaskInfo(IWorkTask task);
+    public List<IWorkTask> queryTaskInfo();
+    public void deleteTaskInfo(IWorkTask task);
+    public IWorkTask readTaskInfo();
 }
