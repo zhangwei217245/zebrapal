@@ -12,7 +12,31 @@ import net.zebrapal.concurrent.enumrations.TaskState;
  * @author X-Spirit
  */
 public interface IWorkTask extends Runnable{
+    /**
+     * @return the taskName
+     */
     public String getTaskName();
+
+    /**
+     * @param taskName the taskName to set
+     */
+    public void setTaskName(String taskName);
+    /**
+     * @return the taskState
+     */
     public TaskState getTaskState();
-    
+
+    /**
+     * @param taskState the taskState to set
+     */
+    public void setTaskState(TaskState taskState);
+    /**
+     * @return the taskOwner
+     */
+    public String getTaskOwner();
+
+    /**
+     * @param taskOwner the taskOwner to set
+     */
+    public void setTaskOwner(String taskOwner);
 }

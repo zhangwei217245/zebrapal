@@ -107,7 +107,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
         //boolean b = true;
         if(taskState.equals(TaskState.SLEEP)){
             //write disk
-            return false;
+            return true;
         }else if(taskState.equals(TaskState.HIBERNATE)){
             try {
                 atomOperation.close();

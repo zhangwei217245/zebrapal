@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
 
 /**
@@ -48,14 +49,36 @@ public class TaskController {
     public RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>)executor.scheduleAtFixedRate(command, initialDelay,period, unit);
         workerMap.put(command, ft);
+        taskPersistManager.createTaskInfo(command);
         return ft;
     }
     public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command,long initialDelay,long delay,TimeUnit unit){
         return (RunnableScheduledFuture<?>) scheduleAtFixedRate(command, initialDelay,-delay, unit);
     }
 
+    /**
+     * Make the task falls asleep. The task won't be removed from the workerMap but will be persisted once.
+     * @param task
+     */
+    public void fallAsleep(IWorkTask task){
+        try {
+            task.setTaskState(TaskState.SLEEP);
+            taskPersistManager.updateTaskInfo(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Hibernate the task. The task won't be removed from the workerMap but will be persisted once.
+     * @param task
+     */
     public void hibernate(IWorkTask task){
-        
+        try {
+            task.setTaskState(TaskState.HIBERNATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop(IWorkTask task){
