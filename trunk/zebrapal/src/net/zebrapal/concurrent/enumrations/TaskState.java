@@ -54,5 +54,10 @@ public enum TaskState {
          * 任务发生异常，运行崩溃
          * The task throws an exception and the thread is crashed
          */
-        CRASHED;
+        CRASHED,
+        /**
+         * 用户取消任务。
+         * Users cancels the task.
+         */
+        CANCELLED;
 }

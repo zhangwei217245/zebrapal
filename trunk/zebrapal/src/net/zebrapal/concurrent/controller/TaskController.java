@@ -70,22 +70,24 @@ public class TaskController {
     }
     
     /**
-     * Hibernate the task. The task won't be removed from the workerMap but will be persisted once.
+     * Hibernate the task. The task will be removed from the workerMap and will be persisted once.
      * @param task
      */
     public void hibernate(IWorkTask task){
         try {
             task.setTaskState(TaskState.HIBERNATE);
+            remove(task);
             taskPersistManager.updateTaskInfo(task);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public void stop(IWorkTask task){
-        
-    }
-
+    
+    /**
+     * Stop the task. The task will be removed from the workerMap and also the database. The result of the task will not be
+     * cancelled until users process it.
+     * @param task
+     */
     public void stopWithReset(IWorkTask task){
         
     }
@@ -113,6 +115,7 @@ public class TaskController {
             if(!workerMap.get(task).isCancelled()){
                 remove(task);
             }else{
+                task.setTaskState(TaskState.CANCELLED);
                 workerMap.get(task).cancel(true);
                 remove(task);
             }
