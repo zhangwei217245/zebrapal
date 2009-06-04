@@ -5,6 +5,7 @@
 
 package net.zebrapal.concurrent.task;
 
+import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 
 /**
@@ -12,6 +13,8 @@ import net.zebrapal.concurrent.enumrations.TaskState;
  * @author X-Spirit
  */
 public interface IWorkTask extends Runnable{
+    public TaskController getTaskController();
+    public void setTaskController(TaskController taskController);
     /**
      * @return the taskName
      */
