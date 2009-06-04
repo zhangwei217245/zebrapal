@@ -44,8 +44,6 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
         this.taskController = taskController;
     }
 
-
-
     /**
      * @return the taskState
      */
@@ -109,8 +107,6 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     protected void setFailedCount(long failedCount) {
         this.failedCount = failedCount;
     }
-
-    
 
     /**
      * check the TaskState and do the operation accordingly.
