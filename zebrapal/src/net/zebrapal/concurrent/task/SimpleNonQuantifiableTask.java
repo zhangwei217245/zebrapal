@@ -20,6 +20,8 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
         this.taskState = taskstate;
         this.tasktype = this.tasktype = TaskType.NONQUANTIFIABLE;
     }
+
+    @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

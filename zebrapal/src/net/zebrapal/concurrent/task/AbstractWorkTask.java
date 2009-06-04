@@ -96,24 +96,30 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     /**
      * check the TaskState and do the operation accordingly.
+     * CRASHED and FINISHED will not be set during this decision
      * @return
      */
     protected boolean isRunningState(){
         //boolean b = true;
         if(taskState.equals(TaskState.SLEEP)){
-            //write disk
             return true;
         }else if(taskState.equals(TaskState.HIBERNATE)){
-            //write disk
-            return false;
-        }else if(taskState.equals(TaskState.CRASHED)){
-            //write disk
+            try {
+                atomOperation.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return false;
         }else if(taskState.equals(TaskState.CANCELLED)){
-            //write disk
+            try {
+                atomOperation.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }else if(taskState.equals(TaskState.CRASHED)){
             return false;
         }else if(taskState.equals(TaskState.FINISHED)){
-            //write disk
             return false;
         }
         return true;

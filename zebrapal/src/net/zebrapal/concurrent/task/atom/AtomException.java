@@ -10,6 +10,9 @@ package net.zebrapal.concurrent.task.atom;
  * @author X-Spirit
  */
 public class AtomException extends Exception {
+    
+    private static final long serialVersionUID = 1077098293370113422L;
+
     private AtomPeriod atomPeriod;
 
     public AtomPeriod getAtomPeriod() {
