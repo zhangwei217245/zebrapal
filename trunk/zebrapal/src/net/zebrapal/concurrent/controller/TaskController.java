@@ -30,14 +30,26 @@ public class TaskController {
         ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
     }
 
+    /**
+     * Execute the task immediately.
+     * This method is deprecated, you cannot use it because it won't return
+     * a FutureTask represent for the WorkTask.
+     * @param command
+     * @deprecated
+     */
     @Deprecated
     public void execute(IWorkTask command) {
-        
         if (command == null)
             throw new NullPointerException();
         scheduleAtFixedRate(command,0, 0, TimeUnit.NANOSECONDS);
     }
 
+    /**
+     * Submit the task immediately and the task will run at once.
+     * this method returns a FutureTask.
+     * @param command
+     * @return
+     */
     public Future<?> submit(IWorkTask command) {
         return scheduleAtFixedRate(command,0, 0, TimeUnit.NANOSECONDS);
     }
@@ -47,11 +59,13 @@ public class TaskController {
     }
     
     public RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
+        command.setTaskController(this);
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>)executor.scheduleAtFixedRate(command, initialDelay,period, unit);
         workerMap.put(command, ft);
         taskPersistManager.createTaskInfo(command);
         return ft;
     }
+    
     public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command,long initialDelay,long delay,TimeUnit unit){
         return (RunnableScheduledFuture<?>) scheduleAtFixedRate(command, initialDelay,-delay, unit);
     }

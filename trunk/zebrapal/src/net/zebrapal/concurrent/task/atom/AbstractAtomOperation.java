@@ -17,6 +17,7 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
 
     protected long totalCount;
 
+    @Override
     public long getTotalCount(){
         return this.totalCount;
     }

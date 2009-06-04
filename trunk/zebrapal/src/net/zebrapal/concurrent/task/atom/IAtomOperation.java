@@ -28,6 +28,11 @@ public interface IAtomOperation {
      * @throws net.zebrapal.concurrent.task.atom.AtomException
      */
     public void close();
+    /**
+     * Get the total count of the operations
+     * @return
+     */
+    public long getTotalCount();
 
     /**
      * 

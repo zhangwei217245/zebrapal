@@ -22,7 +22,40 @@ public class SimplePredictableTask extends AbstractWorkTask{
     }
     @Override
     public void run() {
-        
+        try {
+            atomOperation.init();
+            setTotalCount(atomOperation.getTotalCount());
+            setCompleteCount(0L);
+            setFailedCount(0L);
+            if(taskState.equals(TaskState.RESTORED)){
+                atomOperation.skip(completeCount);
+                taskState = TaskState.RUNNING;
+            }
+            while(taskState.equals(TaskState.CREATED)||taskState.equals(TaskState.RUNNING)||taskState.equals(TaskState.SLEEP)){
+                if(taskState.equals(TaskState.SLEEP)){
+                    continue;
+                }
+                try {
+                    atomOperation.execute();
+                    if(++completeCount%1009==0){
+                        getTaskController().getTaskPersistManager().updateTaskInfo(this);
+                    }
+                } catch (Exception e) {
+                    failedCount++;
+                    e.printStackTrace();
+                }
+                if(!isRunningState()){
+                    return;
+                }
+            }
+            taskState = TaskState.FINISHED;
+        } catch (Exception e) {
+            taskState = TaskState.CRASHED;
+            e.printStackTrace();
+        } finally{
+            atomOperation.close();
+            getTaskController().getTaskPersistManager().updateTaskInfo(this);
+        }
     }
 
 

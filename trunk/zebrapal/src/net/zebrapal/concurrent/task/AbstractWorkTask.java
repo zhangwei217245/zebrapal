@@ -6,6 +6,7 @@
 package net.zebrapal.concurrent.task;
 
 import java.io.Serializable;
+import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
@@ -16,6 +17,8 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  */
 public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     
+    TaskController taskController;
+
 	protected TaskState taskState = TaskState.CREATED;
 
     protected String taskName;
@@ -28,7 +31,20 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     
     protected long failedCount;
 
+    private long totalCount;
+
     protected IAtomOperation atomOperation;
+
+    
+    public TaskController getTaskController() {
+        return this.taskController;
+    }
+
+    public void setTaskController(TaskController taskController) {
+        this.taskController = taskController;
+    }
+
+
 
     /**
      * @return the taskState
@@ -68,7 +84,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @param completeCount the completeCount to set
      */
-    public void setCompleteCount(long completeCount) {
+    protected void setCompleteCount(long completeCount) {
         this.completeCount = completeCount;
     }
 
@@ -90,9 +106,11 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @param failedCount the failedCount to set
      */
-    public void setFailedCount(long failedCount) {
+    protected void setFailedCount(long failedCount) {
         this.failedCount = failedCount;
     }
+
+    
 
     /**
      * check the TaskState and do the operation accordingly.
@@ -137,5 +155,19 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
      */
     public void setTaskOwner(String taskOwner) {
         this.taskOwner = taskOwner;
+    }
+
+    /**
+     * @return the totalCount
+     */
+    public long getTotalCount() {
+        return totalCount;
+    }
+
+    /**
+     * @param totalCount the totalCount to set
+     */
+    protected void setTotalCount(long totalCount) {
+        this.totalCount = totalCount;
     }
 }

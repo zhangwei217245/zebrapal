@@ -32,8 +32,9 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                 }
                 try {
                     atomOperation.execute();
-                    
-                    completeCount++;
+                    if(++completeCount%1009==0){
+                        getTaskController().getTaskPersistManager().updateTaskInfo(this);
+                    }
                 } catch (Exception e) {
                     failedCount++;
                     e.printStackTrace();
@@ -48,7 +49,7 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
             e.printStackTrace();
         } finally{
             atomOperation.close();
-            
+            getTaskController().getTaskPersistManager().updateTaskInfo(this);
         }
     }
 
