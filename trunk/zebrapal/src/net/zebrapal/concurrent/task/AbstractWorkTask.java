@@ -18,8 +18,8 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = -7889170004528578634L;
+    
 	protected TaskState taskState = TaskState.CREATED;
 
     protected String taskName;
@@ -110,28 +110,13 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
             //write disk
             return true;
         }else if(taskState.equals(TaskState.HIBERNATE)){
-            try {
-                atomOperation.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             //write disk
             return false;
         }else if(taskState.equals(TaskState.CRASHED)){
             //write disk
-            try {
-                atomOperation.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return false;
         }else if(taskState.equals(TaskState.CANCELLED)){
             //write disk
-            try {
-                atomOperation.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return false;
         }else if(taskState.equals(TaskState.FINISHED)){
             //write disk
