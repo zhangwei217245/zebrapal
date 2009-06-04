@@ -8,12 +8,15 @@ import net.zebrapal.concurrent.enumrations.TaskType;
  * @author X-Spirit
  */
 public class SimpleQuantifiableTask extends AbstractWorkTask{
+    
     private static final long serialVersionUID = -8232350586327794610L;
     
     public SimpleQuantifiableTask(TaskState taskstate){
         this.taskState = taskstate;
         this.tasktype = TaskType.QUANTIFIABLE;
     }
+
+    @Override
     public void run() {
         try {
             atomOperation.init();
@@ -36,14 +39,16 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                     e.printStackTrace();
                 }
                 if(!isRunningState()){
-                    break;
+                    return;
                 }
             }
-            
+            taskState = TaskState.FINISHED;
         } catch (Exception e) {
+            taskState = TaskState.CRASHED;
             e.printStackTrace();
         } finally{
             atomOperation.close();
+            
         }
     }
 

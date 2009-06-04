@@ -84,27 +84,6 @@ public class TaskController {
     }
     
     /**
-     * Stop the task. The task will be removed from the workerMap and also the database. The result of the task will not be
-     * cancelled until users process it.
-     * @param task
-     */
-    public void stopWithReset(IWorkTask task){
-        
-    }
-    /**
-     * Clean up all the canceled work from both the workMap and the executor
-     */
-    public void cleanUpCanceledTask(){
-        Set<IWorkTask> keys = workerMap.keySet();
-        for(IWorkTask task:keys){
-            if(workerMap.get(task).isCancelled()){
-                workerMap.remove(task);
-            }
-        }
-        ((ScheduledThreadPoolExecutor)executor).purge();
-    }
-
-    /**
      * Cancel a Task forcibly. In this situation, the task persistence manager will not persist this task.
      * If a task need to be persisted after the controller stops its work, please call the stop method.
      * @param task
@@ -125,8 +104,6 @@ public class TaskController {
             return false;
         }
     }
-
-
     /**
      * Remove the task from the Blocking Queue of SchedulerExecutor forcibly
      * @param command
@@ -137,6 +114,20 @@ public class TaskController {
         workerMap.remove(command);
         return ((ScheduledThreadPoolExecutor)executor).remove(command);
     }
+
+    /**
+     * Clean up all the canceled work from both the workMap and the executor
+     */
+    public void cleanUpCanceledTask(){
+        Set<IWorkTask> keys = workerMap.keySet();
+        for(IWorkTask task:keys){
+            if(workerMap.get(task).isCancelled()){
+                workerMap.remove(task);
+            }
+        }
+        ((ScheduledThreadPoolExecutor)executor).purge();
+    }
+
     public void shutDown(){
         executor.shutdown();
     }
@@ -156,7 +147,11 @@ public class TaskController {
         return workerMap;
     }
 
-    public void setWorkerMap(ConcurrentMap workerMap) {
+    /**
+     * 
+     * @param workerMap
+     */
+    public void setWorkerMap(ConcurrentMap<IWorkTask,RunnableScheduledFuture> workerMap) {
         this.workerMap = workerMap;
     }
 

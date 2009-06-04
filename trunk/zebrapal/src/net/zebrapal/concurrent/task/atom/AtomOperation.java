@@ -25,13 +25,14 @@ public class AtomOperation extends AbstractAtomOperation{
     public void close() {
         super.close();
     }
-
+    
     @Override
-    public long getTotalCount() {
+    public void skip(long skipCount) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void skip(long skipCount) {
+    @Override
+    protected long calcTotalCount() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
