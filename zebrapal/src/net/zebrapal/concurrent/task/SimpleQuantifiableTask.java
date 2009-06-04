@@ -8,6 +8,8 @@ import net.zebrapal.concurrent.enumrations.TaskType;
  * @author X-Spirit
  */
 public class SimpleQuantifiableTask extends AbstractWorkTask{
+    private static final long serialVersionUID = -8232350586327794610L;
+    
     public SimpleQuantifiableTask(TaskState taskstate){
         this.taskState = taskstate;
         this.tasktype = TaskType.QUANTIFIABLE;

@@ -15,10 +15,6 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  * @author X-Spirit
  */
 public abstract class AbstractWorkTask implements IWorkTask,Serializable{
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7889170004528578634L;
     
 	protected TaskState taskState = TaskState.CREATED;
 

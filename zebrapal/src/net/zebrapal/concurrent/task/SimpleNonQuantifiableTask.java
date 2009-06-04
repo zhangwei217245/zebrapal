@@ -14,6 +14,8 @@ import net.zebrapal.concurrent.enumrations.TaskType;
  */
 public class SimpleNonQuantifiableTask extends AbstractWorkTask{
 
+    private static final long serialVersionUID = -6277610883156296111L;
+    
     public SimpleNonQuantifiableTask(TaskState taskstate){
         this.taskState = taskstate;
         this.tasktype = this.tasktype = TaskType.NONQUANTIFIABLE;
