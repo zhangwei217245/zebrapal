@@ -3,34 +3,31 @@
  * and open the template in the editor.
  */
 
-package net.zebrapal.concurrent.factory;
+package net.zebrapal.concurrent.task;
 
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
-import net.zebrapal.concurrent.task.AbstractWorkTask;
-import net.zebrapal.concurrent.task.SimpleNonQuantifiableTask;
-import net.zebrapal.concurrent.task.SimplePredictableTask;
-import net.zebrapal.concurrent.task.SimpleQuantifiableTask;
 
 /**
  *
  * @author X-Spirit
  */
-public class TaskFactory {
+public class SimpleWorkTaskFactory {
     private TaskType tasktype;
     private TaskState taskstate;
 
-    public TaskFactory(){
+
+    public SimpleWorkTaskFactory(){
         this.tasktype = TaskType.QUANTIFIABLE;
         this.taskstate = TaskState.CREATED;
 
     }
 
-    public TaskFactory(TaskType tasktype){
+    public SimpleWorkTaskFactory(TaskType tasktype){
         this.tasktype = tasktype;
     }
 
-    public TaskFactory setTaskType(TaskType tasktype){
+    public SimpleWorkTaskFactory setTaskType(TaskType tasktype){
         this.tasktype = tasktype;
         return this;
     }
@@ -39,7 +36,7 @@ public class TaskFactory {
         return taskstate;
     }
 
-    public TaskFactory setTaskstate(TaskState taskstate) {
+    public SimpleWorkTaskFactory setTaskstate(TaskState taskstate) {
         this.taskstate = taskstate;
         return this;
     }
