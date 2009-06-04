@@ -25,9 +25,5 @@ public class SimplePredictableTask extends AbstractWorkTask{
         
     }
 
-    @Override
-    public void writeTaskProgress() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
 }
