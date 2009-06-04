@@ -19,9 +19,9 @@ public interface IWorkTask extends Runnable{
 
     public TaskType getTasktype();
     
-    public void setTasktype(TaskType tasktype);
+    //public void setTasktype(TaskType tasktype);
 
-    public void setTaskController(TaskController taskController);
+    //public void setTaskController(TaskController taskController);
     /**
      * @return the taskName
      */
@@ -30,7 +30,7 @@ public interface IWorkTask extends Runnable{
     /**
      * @param taskName the taskName to set
      */
-    public void setTaskName(String taskName);
+    //public void setTaskName(String taskName);
     /**
      * @return the taskState
      */
@@ -39,7 +39,7 @@ public interface IWorkTask extends Runnable{
     /**
      * @param taskState the taskState to set
      */
-    public void setTaskState(TaskState taskState);
+    //public void setTaskState(TaskState taskState);
     /**
      * @return the taskOwner
      */
@@ -48,5 +48,5 @@ public interface IWorkTask extends Runnable{
     /**
      * @param taskOwner the taskOwner to set
      */
-    public void setTaskOwner(String taskOwner);
+    //public void setTaskOwner(String taskOwner);
 }

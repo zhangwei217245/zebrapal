@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
+import net.zebrapal.concurrent.task.AbstractWorkTask;
 
 /**
  *
@@ -59,7 +60,7 @@ public class TaskController {
     }
     
     public RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
-        command.setTaskController(this);
+        ((AbstractWorkTask)command).setTaskController(this);
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>)executor.scheduleAtFixedRate(command, initialDelay,period, unit);
         workerMap.put(command, ft);
         taskPersistManager.createTaskInfo(command);
@@ -76,7 +77,7 @@ public class TaskController {
      */
     public void fallAsleep(IWorkTask task){
         try {
-            task.setTaskState(TaskState.SLEEP);
+            ((AbstractWorkTask)task).setTaskState(TaskState.SLEEP);
             taskPersistManager.updateTaskInfo(task);
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,7 +90,7 @@ public class TaskController {
      */
     public void hibernate(IWorkTask task){
         try {
-            task.setTaskState(TaskState.HIBERNATE);
+            ((AbstractWorkTask)task).setTaskState(TaskState.HIBERNATE);
             remove(task);
             taskPersistManager.updateTaskInfo(task);
         } catch (Exception e) {
@@ -108,7 +109,7 @@ public class TaskController {
             if(!workerMap.get(task).isCancelled()){
                 remove(task);
             }else{
-                task.setTaskState(TaskState.CANCELLED);
+                ((AbstractWorkTask)task).setTaskState(TaskState.CANCELLED);
                 workerMap.get(task).cancel(true);
                 remove(task);
             }
