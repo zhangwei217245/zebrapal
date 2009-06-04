@@ -12,7 +12,10 @@ public interface IAtomOperation {
      * @throws net.zebrapal.concurrent.task.atom.AtomException
      */
     public void init() throws AtomException;
-
+    /**
+     * skip some operations after the task is restored..
+     * @param skipCount
+     */
     public void skip(long skipCount);
     /**
      * execute the atom operation.

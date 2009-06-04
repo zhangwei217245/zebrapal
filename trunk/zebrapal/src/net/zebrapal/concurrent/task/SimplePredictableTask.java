@@ -14,6 +14,8 @@ import net.zebrapal.concurrent.enumrations.TaskType;
  */
 public class SimplePredictableTask extends AbstractWorkTask{
 
+    private static final long serialVersionUID = -6416131919976886576L;
+    
     public SimplePredictableTask(TaskState taskstate){
         this.taskState = taskstate;
         this.tasktype = TaskType.PREDICTABLE;
