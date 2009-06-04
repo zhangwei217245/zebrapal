@@ -17,23 +17,23 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  */
 public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     
-    TaskController taskController;
+    private TaskController taskController;
 
-	protected TaskState taskState = TaskState.CREATED;
+	private TaskState taskState = TaskState.CREATED;
 
-    protected String taskName;
+    private String taskName;
 
-    protected String taskOwner;
+    private String taskOwner;
 
-    protected TaskType tasktype;
+    private TaskType tasktype;
 
-    protected long completeCount;
+    protected  long completeCount;
     
     protected long failedCount;
+    
+    protected long totalCount;
 
-    private long totalCount;
-
-    protected IAtomOperation atomOperation;
+    private IAtomOperation atomOperation;
 
     
     public TaskController getTaskController() {
@@ -122,18 +122,8 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
         if(taskState.equals(TaskState.SLEEP)){
             return true;
         }else if(taskState.equals(TaskState.HIBERNATE)){
-            try {
-                atomOperation.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return false;
         }else if(taskState.equals(TaskState.CANCELLED)){
-            try {
-                atomOperation.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             return false;
         }else if(taskState.equals(TaskState.CRASHED)){
             return false;
@@ -170,4 +160,19 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     protected void setTotalCount(long totalCount) {
         this.totalCount = totalCount;
     }
+
+    /**
+     * @return the tasktype
+     */
+    public TaskType getTasktype() {
+        return tasktype;
+    }
+
+    /**
+     * @param tasktype the tasktype to set
+     */
+    public void setTasktype(TaskType tasktype) {
+        this.tasktype = tasktype;
+    }
+    
 }

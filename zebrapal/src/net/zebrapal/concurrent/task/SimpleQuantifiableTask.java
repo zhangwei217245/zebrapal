@@ -12,26 +12,26 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
     private static final long serialVersionUID = -8232350586327794610L;
     
     public SimpleQuantifiableTask(TaskState taskstate){
-        this.taskState = taskstate;
-        this.tasktype = TaskType.QUANTIFIABLE;
+        setTaskState(taskstate);
+        setTasktype(TaskType.QUANTIFIABLE);
     }
 
     @Override
     public void run() {
         try {
-            atomOperation.init();
+            getAtomOperation().init();
             setCompleteCount(0L);
             setFailedCount(0L);
-            if(taskState.equals(TaskState.RESTORED)){
-                atomOperation.skip(completeCount);
-                taskState = TaskState.RUNNING;
+            if(getTaskState().equals(TaskState.RESTORED)){
+                getAtomOperation().skip(completeCount);
+                setTaskState(TaskState.RUNNING);
             }
-            while(taskState.equals(TaskState.CREATED)||taskState.equals(TaskState.RUNNING)||taskState.equals(TaskState.SLEEP)){
-                if(taskState.equals(TaskState.SLEEP)){
+            while(getTaskState().equals(TaskState.CREATED)||getTaskState().equals(TaskState.RUNNING)||getTaskState().equals(TaskState.SLEEP)){
+                if(getTaskState().equals(TaskState.SLEEP)){
                     continue;
                 }
                 try {
-                    atomOperation.execute();
+                    getAtomOperation().execute();
                     if(++completeCount%1009==0){
                         getTaskController().getTaskPersistManager().updateTaskInfo(this);
                     }
@@ -39,16 +39,17 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                     failedCount++;
                     e.printStackTrace();
                 }
+                setTotalCount(completeCount+failedCount);
                 if(!isRunningState()){
                     return;
                 }
             }
-            taskState = TaskState.FINISHED;
+            setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
-            taskState = TaskState.CRASHED;
+            setTaskState(TaskState.CRASHED);
             e.printStackTrace();
         } finally{
-            atomOperation.close();
+            getAtomOperation().close();
             getTaskController().getTaskPersistManager().updateTaskInfo(this);
         }
     }
