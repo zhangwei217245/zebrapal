@@ -24,8 +24,4 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public void writeTaskProgress() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

@@ -30,8 +30,6 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     protected IAtomOperation atomOperation;
 
-    
-    public abstract void writeTaskProgress();
     /**
      * @return the taskState
      */
