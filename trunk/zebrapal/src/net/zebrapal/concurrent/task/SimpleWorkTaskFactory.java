@@ -41,7 +41,6 @@ public class SimpleWorkTaskFactory {
         return this;
     }
 
-    
 
     public AbstractWorkTask createTask(){
         if(TaskType.QUANTIFIABLE.equals(this.tasktype)){
