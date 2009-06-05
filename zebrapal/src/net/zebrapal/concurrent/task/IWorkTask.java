@@ -17,6 +17,14 @@ public interface IWorkTask extends Runnable{
     
     public TaskController getTaskController();
 
+    public long getFailedCount();
+
+    public long getCompleteCount();
+
+    public long getTotalCount();
+
+    public long getCreateDate();
+
     public TaskType getTasktype();
     
     //public void setTasktype(TaskType tasktype);
