@@ -6,7 +6,6 @@
 package net.zebrapal.concurrent.persist;
 
 import java.util.List;
-import net.zebrapal.concurrent.task.AbstractWorkTask;
 import net.zebrapal.concurrent.task.IWorkTask;
 
 /**
