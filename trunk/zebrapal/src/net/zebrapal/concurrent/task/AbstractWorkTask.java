@@ -35,7 +35,8 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     private IAtomOperation atomOperation;
 
-    
+    private long createDate;
+
     public TaskController getTaskController() {
         return this.taskController;
     }
@@ -68,7 +69,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @param taskName the taskName to set
      */
-    public void setTaskName(String taskName) {
+    protected void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
@@ -139,7 +140,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @param taskOwner the taskOwner to set
      */
-    public void setTaskOwner(String taskOwner) {
+    protected void setTaskOwner(String taskOwner) {
         this.taskOwner = taskOwner;
     }
 
@@ -167,8 +168,22 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @param tasktype the tasktype to set
      */
-    public void setTasktype(TaskType tasktype) {
+    protected void setTasktype(TaskType tasktype) {
         this.tasktype = tasktype;
+    }
+    /**
+     * the createDate
+     * @return
+     */
+    public long getCreateDate() {
+        return createDate;
+    }
+    /**
+     *
+     * @param createDate the createDate to set
+     */
+    public void setCreateDate(long createDate) {
+        this.createDate = createDate;
     }
     
 }
