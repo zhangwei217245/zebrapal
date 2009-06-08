@@ -40,7 +40,7 @@ public class SimpleWorkTaskFactory {
         return this;
     }
 
-    public void checkFields() throws NullPointerException{
+    public void checkFields(){
         if(taskController == null){
             throw new NullPointerException("taskController cannot be null");
         }
@@ -58,7 +58,31 @@ public class SimpleWorkTaskFactory {
         }
     }
 
-    public AbstractWorkTask createTask() throws NullPointerException{
+    public AbstractWorkTask restoreTask(long completeCount,long failedCount,long totalCount){
+        checkFields();
+        if(TaskType.QUANTIFIABLE.equals(this.taskType)){
+            AbstractWorkTask awt = new SimpleQuantifiableTask(taskController, taskState, taskName, taskOwner, atomOperation, createDate);
+            awt.setCompleteCount(completeCount);
+            awt.setFailedCount(failedCount);
+            awt.setTotalCount(totalCount);
+            return awt;
+        }else if(TaskType.PREDICTABLE.equals(this.taskType)){
+            AbstractWorkTask awt = new SimplePredictableTask(taskController, taskState, taskName, taskOwner, atomOperation, createDate);
+            awt.setCompleteCount(completeCount);
+            awt.setFailedCount(failedCount);
+            awt.setTotalCount(totalCount);
+            return awt;
+        }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
+            AbstractWorkTask awt = new SimpleNonQuantifiableTask(taskController, taskState, taskName, taskOwner, atomOperation, createDate);
+            awt.setCompleteCount(completeCount);
+            awt.setFailedCount(failedCount);
+            awt.setTotalCount(totalCount);
+            return awt;
+        }
+        return null;
+    }
+
+    public AbstractWorkTask createTask(){
         checkFields();
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
             return new SimpleQuantifiableTask(taskController, taskState, taskName, taskOwner, atomOperation, createDate);
