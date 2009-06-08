@@ -10,7 +10,16 @@ package net.zebrapal.concurrent.enumrations;
  * @author X-Spirit
  */
 public class TestTaskState {
+
+    void checkvoid(){
+        throw new NullPointerException("asdfasdf");
+    }
+    void check(){
+        checkvoid();
+    }
     public static void main(String[] args){
+        TestTaskState tts = new TestTaskState();
+        tts.check();
         System.out.println(TaskState.CRASHED.ordinal());
     }
 }
