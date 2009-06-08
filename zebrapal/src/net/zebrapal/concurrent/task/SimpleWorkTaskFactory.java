@@ -40,7 +40,7 @@ public class SimpleWorkTaskFactory {
         return this;
     }
 
-    public AbstractWorkTask createTask(){
+    public void checkFields() throws NullPointerException{
         if(taskController == null){
             throw new NullPointerException("taskController cannot be null");
         }
@@ -56,6 +56,10 @@ public class SimpleWorkTaskFactory {
         if(createDate == null){
             createDate = new Date();
         }
+    }
+
+    public AbstractWorkTask createTask() throws NullPointerException{
+        checkFields();
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
             return new SimpleQuantifiableTask(taskController, taskState, taskName, taskOwner, atomOperation, createDate);
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
