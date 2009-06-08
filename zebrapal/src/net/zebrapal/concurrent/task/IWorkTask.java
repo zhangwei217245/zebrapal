@@ -5,6 +5,7 @@
 
 package net.zebrapal.concurrent.task;
 
+import java.util.Date;
 import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
@@ -23,7 +24,7 @@ public interface IWorkTask extends Runnable{
 
     public long getTotalCount();
 
-    public long getCreateDate();
+    public Date getCreateDate();
 
     public TaskType getTasktype();
     

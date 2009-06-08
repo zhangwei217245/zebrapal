@@ -5,8 +5,11 @@
 
 package net.zebrapal.concurrent.task;
 
+import java.util.Date;
+import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
  *
@@ -20,6 +23,18 @@ public class SimplePredictableTask extends AbstractWorkTask{
         setTaskState(taskstate);
         setTasktype(TaskType.PREDICTABLE);
     }
+
+    public SimplePredictableTask (TaskController taskController,TaskState taskstate,String taskname,
+            String taskowner,IAtomOperation atomOperation,Date createDate){
+        setTaskController(taskController);
+        setTaskState(taskstate);
+        setTaskName(taskname);
+        setTaskOwner(taskowner);
+        setAtomOperation(atomOperation);
+        setCreateDate(createDate);
+        setTasktype(TaskType.PREDICTABLE);
+    }
+    
     @Override
     public void run() {
         try {

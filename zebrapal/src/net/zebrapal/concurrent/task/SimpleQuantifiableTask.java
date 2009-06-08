@@ -1,7 +1,10 @@
 package net.zebrapal.concurrent.task;
 
+import java.util.Date;
+import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
  *
@@ -13,6 +16,17 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
     
     public SimpleQuantifiableTask(TaskState taskstate){
         setTaskState(taskstate);
+        setTasktype(TaskType.QUANTIFIABLE);
+    }
+    
+    public SimpleQuantifiableTask(TaskController taskController,TaskState taskstate,String taskname,
+            String taskowner,IAtomOperation atomOperation,Date createDate){
+        setTaskController(taskController);
+        setTaskState(taskstate);
+        setTaskName(taskname);
+        setTaskOwner(taskowner);
+        setAtomOperation(atomOperation);
+        setCreateDate(createDate);
         setTasktype(TaskType.QUANTIFIABLE);
     }
 
