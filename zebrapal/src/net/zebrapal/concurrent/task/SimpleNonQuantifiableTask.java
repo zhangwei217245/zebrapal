@@ -37,7 +37,17 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            getAtomOperation().init();
+            getAtomOperation().execute();
+            setTaskState(TaskState.FINISHED);
+        } catch (Exception e) {
+            setTaskState(TaskState.CRASHED);
+            e.printStackTrace();
+        } finally{
+            getAtomOperation().close();
+            getTaskController().getTaskPersistManager().updateTaskInfo(this);
+        }
     }
 
 }

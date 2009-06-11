@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.enumrations.TaskState;
+import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
 import net.zebrapal.concurrent.task.AbstractWorkTask;
 
@@ -125,7 +126,9 @@ public class TaskController {
      * @return
      */
     private boolean remove(IWorkTask command){
-
+        if(command.getTasktype().equals(TaskType.NONQUANTIFIABLE)){
+            workerMap.get(command).cancel(true);
+        }
         workerMap.remove(command);
         return ((ScheduledThreadPoolExecutor)executor).remove(command);
     }
