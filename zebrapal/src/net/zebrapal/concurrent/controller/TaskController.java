@@ -74,6 +74,7 @@ public class TaskController {
 
     /**
      * Make the task falls asleep. The task won't be removed from the workerMap but will be persisted once.
+     * For Nonquantifiable Task, it may not fall asleep...
      * @param task
      */
     public void fallAsleep(IWorkTask task){
