@@ -60,7 +60,7 @@ public class TaskController {
         return (RunnableScheduledFuture<?>) scheduleAtFixedRate(command, delay,0, unit);
     }
     
-    public RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
+    public synchronized RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
         ((AbstractWorkTask)command).setTaskController(this);
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>)executor.scheduleAtFixedRate(command, initialDelay,period, unit);
         workerMap.put(command, ft);
@@ -77,7 +77,7 @@ public class TaskController {
      * For Nonquantifiable Task, it may not fall asleep...
      * @param task
      */
-    public void fallAsleep(IWorkTask task){
+    public synchronized void fallAsleep(IWorkTask task){
         try {
             ((AbstractWorkTask)task).setTaskState(TaskState.SLEEP);
             taskPersistManager.updateTaskInfo(task);
@@ -90,7 +90,7 @@ public class TaskController {
      * Hibernate the task. The task will be removed from the workerMap and will be persisted once.
      * @param task
      */
-    public void hibernate(IWorkTask task){
+    public synchronized void hibernate(IWorkTask task){
         try {
             ((AbstractWorkTask)task).setTaskState(TaskState.HIBERNATE);
             remove(task);
@@ -106,7 +106,7 @@ public class TaskController {
      * @param task
      * @return
      */
-    public boolean cancelTask(IWorkTask task){
+    public synchronized boolean cancelTask(IWorkTask task){
         try {
             if(!workerMap.get(task).isCancelled()){
                 remove(task);
@@ -126,7 +126,7 @@ public class TaskController {
      * @param command
      * @return
      */
-    private boolean remove(IWorkTask command){
+    private synchronized boolean remove(IWorkTask command){
         if(command.getTasktype().equals(TaskType.NONQUANTIFIABLE)){
             workerMap.get(command).cancel(true);
         }
@@ -137,7 +137,7 @@ public class TaskController {
     /**
      * Clean up all the canceled work from both the workMap and the executor
      */
-    public void cleanUpCanceledTask(){
+    public synchronized void cleanUpCanceledTask(){
         Set<IWorkTask> keys = workerMap.keySet();
         for(IWorkTask task:keys){
             if(workerMap.get(task).isCancelled()){
@@ -147,11 +147,16 @@ public class TaskController {
         ((ScheduledThreadPoolExecutor)executor).purge();
     }
 
-    public void shutDown(){
-        executor.shutdown();
+    public synchronized void shutDown(){
+        if(!(executor.isTerminated()&&executor.isShutdown())){
+            executor.shutdown();
+        }
     }
-    public List<Runnable> shutDownNow(){
-        return executor.shutdownNow();
+    public synchronized List<Runnable> shutDownNow(){
+        if(!(executor.isTerminated()&&executor.isShutdown())){
+            return executor.shutdownNow();
+        }
+        return null;
     }
 
     public ScheduledExecutorService getExecutor() {
