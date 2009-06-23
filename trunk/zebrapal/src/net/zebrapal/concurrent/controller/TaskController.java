@@ -22,12 +22,21 @@ import net.zebrapal.concurrent.task.AbstractWorkTask;
 public class TaskController {
     
     private ScheduledExecutorService executor;
-    
+
+    private static TaskController taskController = new TaskController();
+
     private ConcurrentMap<IWorkTask,RunnableScheduledFuture> workerMap;
 
     private ITaskPersistenceManager taskPersistManager;
 
-    
+    private TaskController(){
+        init();
+    }
+
+    public static TaskController getInstance(){
+        return taskController;
+    }
+
     public void init(){
         ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
     }
