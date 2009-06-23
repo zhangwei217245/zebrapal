@@ -11,7 +11,7 @@ import net.zebrapal.concurrent.task.IWorkTask;
  */
 public class TaskContext {
     private ConcurrentMap<IWorkTask,RunnableScheduledFuture> workerMap;
-    private TaskController taskController;
+    private TaskController taskController=TaskController.getInstance();
     
 
 }
