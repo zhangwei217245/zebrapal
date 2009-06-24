@@ -6,6 +6,7 @@
 package net.zebrapal.concurrent.persist;
 
 import java.util.List;
+import java.util.Properties;
 import net.zebrapal.concurrent.task.IWorkTask;
 
 /**
@@ -13,6 +14,7 @@ import net.zebrapal.concurrent.task.IWorkTask;
  * @author X-Spirit
  */
 public interface ITaskPersistenceManager {
+    public void init(Properties prop);
     public void createTaskInfo(IWorkTask task);
     public void updateTaskInfo(IWorkTask task);
     public List<IWorkTask> queryTaskInfo();
