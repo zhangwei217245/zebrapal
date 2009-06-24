@@ -1,7 +1,7 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
-import net.zebrapal.concurrent.controller.TaskController;
+import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
@@ -12,7 +12,7 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  */
 public class SimpleWorkTaskFactory {
     private TaskType taskType;
-    private TaskController taskController;
+    private TaskContext taskContext;
     private String taskName;
     private String taskOwner;
     private IAtomOperation atomOperation;
@@ -28,8 +28,8 @@ public class SimpleWorkTaskFactory {
     }
 
     public void checkFields(){
-        if(taskController == null){
-            throw new NullPointerException("taskController cannot be null");
+        if(taskContext == null){
+            throw new NullPointerException("taskContext cannot be null");
         }
         if(taskName == null||taskName.length()==0){
             taskName = "ZebraWorker_"+System.currentTimeMillis();
@@ -48,19 +48,19 @@ public class SimpleWorkTaskFactory {
     public AbstractWorkTask restoreTask(long completeCount,long failedCount,long totalCount){
         checkFields();
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimpleQuantifiableTask(taskController, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            AbstractWorkTask awt = new SimpleQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
             return awt;
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimplePredictableTask(taskController, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            AbstractWorkTask awt = new SimplePredictableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
             return awt;
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimpleNonQuantifiableTask(taskController, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            AbstractWorkTask awt = new SimpleNonQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
@@ -72,21 +72,21 @@ public class SimpleWorkTaskFactory {
     public AbstractWorkTask createTask(){
         checkFields();
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            return new SimpleQuantifiableTask(taskController, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            return new SimpleQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            return new SimplePredictableTask(taskController, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            return new SimplePredictableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            return new SimpleNonQuantifiableTask(taskController, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            return new SimpleNonQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }
         return null;
     }
 
     /**
-     * @param taskController the taskController to set
+     * @param taskContext the taskContext to set
      * @return
      */
-    public SimpleWorkTaskFactory setTaskController(TaskController taskController) {
-        this.taskController = taskController;
+    public SimpleWorkTaskFactory setTaskContext(TaskContext taskContext) {
+        this.taskContext = taskContext;
         return this;
     }
 

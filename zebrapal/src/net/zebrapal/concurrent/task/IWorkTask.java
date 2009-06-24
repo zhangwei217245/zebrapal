@@ -6,7 +6,7 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
-import net.zebrapal.concurrent.controller.TaskController;
+import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 
@@ -16,7 +16,7 @@ import net.zebrapal.concurrent.enumrations.TaskType;
  */
 public interface IWorkTask extends Runnable{
     
-    public TaskController getTaskController();
+    public TaskContext getTaskContext();
 
     public long getFailedCount();
 

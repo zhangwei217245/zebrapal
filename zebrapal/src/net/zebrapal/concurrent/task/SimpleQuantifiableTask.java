@@ -1,7 +1,7 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
-import net.zebrapal.concurrent.controller.TaskController;
+import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
@@ -19,9 +19,9 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
         setTasktype(TaskType.QUANTIFIABLE);
     }
     
-    public SimpleQuantifiableTask(TaskController taskController,TaskState taskstate,String taskname,
+    public SimpleQuantifiableTask(TaskContext taskContext,TaskState taskstate,String taskname,
             String taskowner,IAtomOperation atomOperation,Date createDate){
-        setTaskController(taskController);
+        setTaskContext(taskContext);
         setTaskState(taskstate);
         setTaskName(taskname);
         setTaskOwner(taskowner);
@@ -47,7 +47,7 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                 try {
                     getAtomOperation().execute();
                     if(++completeCount%1009==0){
-                        getTaskController().getTaskPersistManager().updateTaskInfo(this);
+                        getTaskContext().getTaskPersistManager().updateTaskInfo(this);
                     }
                 } catch (Exception e) {
                     failedCount++;
@@ -64,7 +64,7 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
             e.printStackTrace();
         } finally{
             getAtomOperation().close();
-            getTaskController().getTaskPersistManager().updateTaskInfo(this);
+            getTaskContext().getTaskPersistManager().updateTaskInfo(this);
         }
     }
 

@@ -7,6 +7,7 @@ package net.zebrapal.concurrent.task;
 
 import java.io.Serializable;
 import java.util.Date;
+import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
@@ -18,7 +19,7 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  */
 public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     
-    private TaskController taskController;
+    private TaskContext taskContext;
 
 	private TaskState taskState = TaskState.CREATED;
 
@@ -38,12 +39,12 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     private Date createDate;
 
-    public TaskController getTaskController() {
-        return this.taskController;
+    public TaskContext getTaskContext() {
+        return this.taskContext;
     }
 
-    public void setTaskController(TaskController taskController) {
-        this.taskController = taskController;
+    public void setTaskContext(TaskContext taskContext) {
+        this.taskContext = taskContext;
     }
 
     /**
