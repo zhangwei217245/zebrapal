@@ -2,6 +2,7 @@ package net.zebrapal.concurrent.controller;
 
 import net.zebrapal.concurrent.task.IWorkTask;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.RunnableScheduledFuture;
@@ -10,6 +11,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.TaskContext;
+import net.zebrapal.concurrent.ZebrapalPropertyKeys;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.AbstractWorkTask;
@@ -28,15 +30,44 @@ public class TaskController {
     
 
     private TaskController(){
-        init();
+        
     }
+
+
 
     public static TaskController getInstance(TaskContext context){
         return taskController.setTaskContext(context);
     }
 
+    /**
+     * initialize the ScheduledThreadPoolExecutor with 20 of corePoolSize
+     */
     public void init(){
-        
+        init(20);
+    }
+
+    /**
+     * initialize the ScheduledThreadPoolExecutor with the specific Properties or 20 if the properties is not available.
+     * @param prop
+     */
+    public void init(Properties prop){
+        int corePoolSize = 20;
+        if(prop!=null&&prop.containsKey(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE)){
+            String str_corePoolSize=prop.getProperty(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE);
+
+            if(str_corePoolSize!=null&&str_corePoolSize.length()>0){
+                corePoolSize = Integer.parseInt(str_corePoolSize);
+            }
+        }
+        init(corePoolSize);
+    }
+
+    /**
+     * initialize the ScheduledThreadPoolExecutor with the specific corePoolSize
+     * @param corePoolSize
+     */
+    public void init(int corePoolSize){
+        executor=new ScheduledThreadPoolExecutor(corePoolSize);
         ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
     }
 

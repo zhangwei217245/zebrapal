@@ -20,4 +20,5 @@ public interface ITaskPersistenceManager {
     public List<IWorkTask> queryTaskInfo();
     public void deleteTaskInfo(IWorkTask task);
     public IWorkTask readTaskInfo();
+    public void close();
 }

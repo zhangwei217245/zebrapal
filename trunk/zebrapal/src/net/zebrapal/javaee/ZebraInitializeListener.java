@@ -19,6 +19,9 @@ public class ZebraInitializeListener implements ServletContextListener{
     
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
+        if(sc.getAttribute(ZEBRAPAL_CONTEXT_KEY)!=null){
+            
+        }
         sc.getInitParameter("");
         
     }

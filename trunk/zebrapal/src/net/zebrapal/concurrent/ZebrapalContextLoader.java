@@ -11,6 +11,6 @@ package net.zebrapal.concurrent;
  */
 public interface ZebrapalContextLoader {
     
-    public void loadContext()throws ContextLoadException;
+    public TaskContext loadContext()throws ContextLoadException;
     public void unloadContext();
 }

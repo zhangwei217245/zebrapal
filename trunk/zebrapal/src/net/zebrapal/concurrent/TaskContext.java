@@ -1,5 +1,6 @@
 package net.zebrapal.concurrent;
 
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -19,14 +20,40 @@ public class TaskContext {
     private TaskController taskController;
     private ITaskPersistenceManager taskPersistManager;
 
+    public TaskContext(){
+        
+    }
+
     public void initialize(){
+
+    }
+    /**
+     * initialize the TaskContext including the persistManager and TaskController
+     * @param props
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.IllegalAccessException
+     */
+    public void initialize(Properties props)throws ClassNotFoundException, InstantiationException, IllegalAccessException{
         workerMap = new ConcurrentHashMap<IWorkTask, RunnableScheduledFuture>();
+
+        //initialize the persistManager
+        String perisitManagerClassName = props.getProperty(ZebrapalPropertyKeys.KEY_PERSISTENCE_MANAGER_CLASS);
+        Object persistManagerObj=Class.forName(perisitManagerClassName).newInstance();
+        if(persistManagerObj instanceof ITaskPersistenceManager){
+            ((ITaskPersistenceManager)persistManagerObj).init(props);
+            taskPersistManager = (ITaskPersistenceManager)persistManagerObj;
+        }
+        
+        //initialize the TaskController
         taskController=TaskController.getInstance(this);
+        taskController.init(props);
     }
 
     public void destroy(){
         taskController.shutDownNow();
         persistWorkerMap();
+        taskPersistManager.close();
     }
     /**
      * Persist all the workTask which is cancelled and done in your workmap with recursion;
