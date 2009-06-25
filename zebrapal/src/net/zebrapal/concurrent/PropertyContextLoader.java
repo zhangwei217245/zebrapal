@@ -6,9 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
 
 /**
  *
@@ -25,8 +22,13 @@ public class PropertyContextLoader implements ZebrapalContextLoader{
     public PropertyContextLoader(String propFileName){
         this.propFileName=propFileName;
     }
+
+    public TaskContext loadContext(String propFileName) throws Exception{
+        this.propFileName=propFileName;
+        return loadContext();
+    }
     
-    public TaskContext loadContext() throws ContextLoadException{
+    public TaskContext loadContext() throws Exception{
         File propFile = new File(propFileName);
 
         Properties props = new Properties();
@@ -65,18 +67,12 @@ public class PropertyContextLoader implements ZebrapalContextLoader{
                 try { in.close(); } catch(IOException ignore) { /* ignore */ }
             }
         }
-        try {
-            return initialize(props);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        
-        
+        return initialize(props);
+       
     }
 
-    public void unloadContext() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void unloadContext(TaskContext taskContext) {
+        taskContext.destroy();
     }
     private TaskContext initialize(Properties props) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
         TaskContext taskContext = new TaskContext();
