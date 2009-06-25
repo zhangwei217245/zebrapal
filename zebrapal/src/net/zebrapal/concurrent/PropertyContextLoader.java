@@ -75,14 +75,12 @@ public class PropertyContextLoader implements ZebrapalContextLoader{
         
     }
 
+    public void unloadContext() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     private TaskContext initialize(Properties props) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
         TaskContext taskContext = new TaskContext();
         taskContext.initialize(props);
         return taskContext;
     }
-
-    public void unloadContext() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }

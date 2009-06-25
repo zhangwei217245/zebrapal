@@ -49,7 +49,9 @@ public class TaskContext {
         taskController=TaskController.getInstance(this);
         taskController.init(props);
     }
-
+    /**
+     * Destroy the TaskContext
+     */
     public void destroy(){
         taskController.shutDownNow();
         persistWorkerMap();
