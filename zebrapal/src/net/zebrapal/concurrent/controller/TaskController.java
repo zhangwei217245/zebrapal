@@ -15,6 +15,7 @@ import net.zebrapal.concurrent.ZebrapalPropertyKeys;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.AbstractWorkTask;
+import net.zebrapal.concurrent.task.SimpleWorkTaskFactory;
 
 /**
  *
@@ -69,6 +70,10 @@ public class TaskController {
     public void init(int corePoolSize){
         executor=new ScheduledThreadPoolExecutor(corePoolSize);
         ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
+        List<IWorkTask> worklist = taskContext.getTaskPersistManager().queryTaskInfo();
+        for(IWorkTask task:worklist){
+            this.submit(task);
+        }
     }
 
     /**
