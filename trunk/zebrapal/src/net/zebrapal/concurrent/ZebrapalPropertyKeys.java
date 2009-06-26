@@ -14,4 +14,5 @@ public class ZebrapalPropertyKeys {
     public static final String PROPERTIES_FILE_NAME="zebrapal.properties";
     public static final String KEY_CORE_POOL_SIZE="zebrapal.corePoolSize";
     public static final String KEY_PERSISTENCE_MANAGER_CLASS="zebrapal.persistenceManagerClass";
+    public static final String KEY_TASK_RESTORE_QUERY="zebrapal.restoreTask.query";
 }
