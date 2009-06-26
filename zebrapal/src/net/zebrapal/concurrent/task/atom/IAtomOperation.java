@@ -1,12 +1,13 @@
 package net.zebrapal.concurrent.task.atom;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * You need to implement an atom operation, and define some variable and initialize them in init() method
  * @author X-Spirit
  */
-public interface IAtomOperation {
+public interface IAtomOperation extends Serializable{
     /**
      * initialize the parameters
      * @throws net.zebrapal.concurrent.task.atom.AtomException
