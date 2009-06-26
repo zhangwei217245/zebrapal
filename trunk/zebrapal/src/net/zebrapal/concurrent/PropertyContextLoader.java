@@ -61,6 +61,29 @@ public class PropertyContextLoader implements ZebrapalContextLoader{
                     throw  new ContextLoadException("Properties file: '"
                             + propFileName + "' could not be read.", ioe);
                 }
+            }else {
+                System.out.println("default resource file in Zebrapal package: 'zebrapal.properties'");
+
+                in = getClass().getClassLoader().getResourceAsStream(
+                        "zebrapal.properties");
+
+                if (in == null) {
+                    in = getClass().getClassLoader().getResourceAsStream(
+                            "/zebrapal.properties");
+                }
+                if (in == null) {
+                    in = getClass().getClassLoader().getResourceAsStream(
+                            "net/zebrapal/zebrapal.properties");
+                }
+                if (in == null) {
+                    throw new ContextLoadException("Default zebrapal.properties not found in class path");
+                }
+                try {
+                    props.load(in);
+                } catch (IOException ioe) {
+                    throw new ContextLoadException("Resource properties file: 'net/zebrapal/zebrapal.properties' "
+                                    + "could not be read from the classpath.", ioe);
+                }
             }
         } finally {
             if(in != null) {
