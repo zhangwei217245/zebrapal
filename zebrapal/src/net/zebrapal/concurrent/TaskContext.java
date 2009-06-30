@@ -114,11 +114,11 @@ public class TaskContext {
                 this.persistInterval = persistInterval;
             }else{
                 System.out.println("An non-prime number was given, and persist interval will be set to 1009 as default");
-                this.persistInterval = persistInterval;
+                this.persistInterval = 1009;
             }
         }else{
             System.out.println("The given number is over range, and persist interval will be set to 1009 as default");
-            this.persistInterval = persistInterval;
+            this.persistInterval = 1009;
         }
     }
 
