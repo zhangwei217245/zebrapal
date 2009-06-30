@@ -15,7 +15,6 @@ import net.zebrapal.concurrent.ZebrapalPropertyKeys;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.AbstractWorkTask;
-import net.zebrapal.concurrent.task.SimpleWorkTaskFactory;
 
 /**
  *
