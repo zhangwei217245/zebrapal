@@ -49,6 +49,7 @@ public class ZebraInitializeListener implements ServletContextListener{
             }
         } catch (Exception e) {
             sc.log(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
         sc.log("Zebrapal Context is successfully initialized...");
     }

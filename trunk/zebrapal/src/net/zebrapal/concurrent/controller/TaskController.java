@@ -70,8 +70,10 @@ public class TaskController {
         executor=new ScheduledThreadPoolExecutor(corePoolSize);
         ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
         List<IWorkTask> worklist = taskContext.getTaskPersistManager().queryTaskInfo();
-        for(IWorkTask task:worklist){
-            this.submit(task);
+        if(worklist!=null){
+            for(IWorkTask task:worklist){
+                this.submit(task);
+            }
         }
     }
 
