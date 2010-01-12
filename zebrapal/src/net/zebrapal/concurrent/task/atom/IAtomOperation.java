@@ -17,7 +17,7 @@ public interface IAtomOperation extends Serializable{
      * skip some operations after the task is restored..
      * @param skipCount
      */
-    public void skip(long skipCount);
+    public void skip(long skipCount) throws AtomException;
     /**
      * execute the atom operation.
      * @return
@@ -28,7 +28,7 @@ public interface IAtomOperation extends Serializable{
      * release the parameters and the related resources..
      * @throws net.zebrapal.concurrent.task.atom.AtomException
      */
-    public void close();
+    public void close() throws AtomException;
     /**
      * Get the total count of the operations
      * @return

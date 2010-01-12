@@ -28,14 +28,40 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
      */
     protected abstract long calcTotalCount();
 
+    protected abstract void initResource(ConcurrentHashMap<?,?> dataMap);
+
+    protected abstract void executeOnce() throws AtomException;
+
+    protected abstract void closeResource();
+
     public void init() throws AtomException {
-        totalCount = calcTotalCount();
+        try {
+            initResource(dataMap);
+            totalCount = calcTotalCount();
+        } catch (Exception e) {
+            throw new AtomException("AtomException:", AtomPeriod.INIT,e);
+        }
+        
     }
 
-    public void execute() throws AtomException {}
+    public void execute() throws AtomException{
+        try {
+            executeOnce();
+        } catch (Exception e) {
+            throw new AtomException("AtomException When Execute:", AtomPeriod.EXECUTE, e);
+        }
+    };
 
-    public void close() {
-        dataMap.clear();
+    
+
+    public void close() throws AtomException{
+        try {
+            closeResource();
+            dataMap.clear();
+        } catch (Exception e) {
+            throw new AtomException("AtomException When Close:", AtomPeriod.RELEASE, e);
+        }
+        
     }
 
     public ConcurrentHashMap<?, ?> getDataMap() {
