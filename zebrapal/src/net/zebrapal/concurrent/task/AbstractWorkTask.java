@@ -20,7 +20,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     
     private TaskContext taskContext;
 
-	private TaskState taskState = TaskState.CREATED;
+    private TaskState taskState = TaskState.CREATED;
 
     private String taskName;
 
