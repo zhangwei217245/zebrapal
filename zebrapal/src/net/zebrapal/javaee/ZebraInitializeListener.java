@@ -12,15 +12,13 @@ import net.zebrapal.concurrent.ZebrapalContextLoader;
  */
 public class ZebraInitializeListener implements ServletContextListener{
 
-    public static final String ZEBRAPAL_CONTEXT_KEY="ZEBRAPAL_CONTEXT_KEY";
-    public static final String ZEBRAPAL_CONTEXT_LOADER="ZEBRAPAL_CONTEXT_LOADER";
-    public static final String ZEBRAPAL_CONTEXT_CONFIG_FILE="ZEBRAPAL_CONTEXT_CONFIG_FILE";
+    
     
     
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
-        String configFileName = sc.getInitParameter(ZEBRAPAL_CONTEXT_CONFIG_FILE);
-        String contextLoaderClass = sc.getInitParameter(ZEBRAPAL_CONTEXT_LOADER);
+        String configFileName = sc.getInitParameter(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_CONFIG_FILE);
+        String contextLoaderClass = sc.getInitParameter(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_LOADER);
         TaskContext taskContext =null;
         try {
             sc.log("Zebrapal Context is initializing...");
@@ -34,10 +32,10 @@ public class ZebraInitializeListener implements ServletContextListener{
                 if(taskContext==null){
                     throw new Exception("TaskContext cannot be loaded due to previous error.");
                 }else{
-                    if(sc.getAttribute(ZEBRAPAL_CONTEXT_KEY)!=null){
-                        throw new Exception("zebrapal task context is already loaded in the ServletContext.");
+                    if(sc.getAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY)!=null){
+                        throw new Exception("Zebrapal Task Context is already loaded successfully in the ServletContext.");
                     }
-                    sc.setAttribute(ZEBRAPAL_CONTEXT_KEY, taskContext);
+                    sc.setAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY, taskContext);
                 }
             }else{
                 throw new Exception("ContextLoader is not specified.");
@@ -51,8 +49,8 @@ public class ZebraInitializeListener implements ServletContextListener{
         
     public void contextDestroyed(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
-        String contextLoaderClass = sc.getInitParameter(ZEBRAPAL_CONTEXT_LOADER);
-        TaskContext taskContext =(TaskContext)sc.getAttribute(ZEBRAPAL_CONTEXT_KEY);
+        String contextLoaderClass = sc.getInitParameter(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_LOADER);
+        TaskContext taskContext =(TaskContext)sc.getAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY);
         try {
             sc.log("Destroying Zebrapal Context ...");
             if(taskContext==null){
@@ -68,7 +66,7 @@ public class ZebraInitializeListener implements ServletContextListener{
                 }else{
                     throw new Exception("ContextLoader is not specified.");
                 }
-                sc.removeAttribute(ZEBRAPAL_CONTEXT_KEY);
+                sc.removeAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY);
             }
         }catch(Exception e){
             sc.log(e.getMessage(), e);

@@ -21,9 +21,7 @@ import net.zebrapal.concurrent.ZebrapalContextLoader;
  */
 public class ZebrapalInitializeServlet extends HttpServlet{
     private static final long serialVersionUID = -4135075203934826888L;
-    public static final String ZEBRAPAL_CONTEXT_KEY="ZEBRAPAL_CONTEXT_KEY";
-    public static final String ZEBRAPAL_CONTEXT_LOADER="ZEBRAPAL_CONTEXT_LOADER";
-    public static final String ZEBRAPAL_CONTEXT_CONFIG_FILE="ZEBRAPAL_CONTEXT_CONFIG_FILE";
+    
 
     private TaskContext taskContext;
     /**
@@ -36,8 +34,8 @@ public class ZebrapalInitializeServlet extends HttpServlet{
         super.init(cfg);
         
         ServletContext sc = cfg.getServletContext();
-        String configFileName = cfg.getInitParameter(ZEBRAPAL_CONTEXT_CONFIG_FILE);
-        String contextLoaderClass = cfg.getInitParameter(ZEBRAPAL_CONTEXT_LOADER);
+        String configFileName = cfg.getInitParameter(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_CONFIG_FILE);
+        String contextLoaderClass = cfg.getInitParameter(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_LOADER);
         try {
             log("Zebrapal Context is initializing...");
             if(contextLoaderClass!=null){
@@ -50,10 +48,10 @@ public class ZebrapalInitializeServlet extends HttpServlet{
                 if(taskContext==null){
                     throw new Exception("TaskContext cannot be loaded due to previous error.");
                 }else{
-                    if(sc.getAttribute(ZEBRAPAL_CONTEXT_KEY)!=null){
-                        throw new Exception("zebrapal task context is already loaded in the ServletContext.");
+                    if(sc.getAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY)!=null){
+                        throw new Exception("Zebrapal Task Context is already loaded successlly in the ServletContext.");
                     }
-                    sc.setAttribute(ZEBRAPAL_CONTEXT_KEY, taskContext);
+                    sc.setAttribute(ZebraServletInitKeys.ZEBRAPAL_CONTEXT_KEY, taskContext);
                 }
             }else{
                 throw new Exception("ContextLoader is not specified.");
