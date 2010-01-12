@@ -5,6 +5,8 @@
 
 package net.zebrapal.concurrent.task.atom;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author X-Spirit
@@ -12,28 +14,26 @@ package net.zebrapal.concurrent.task.atom;
 public class AtomOperation extends AbstractAtomOperation{
 
     @Override
-    public void execute() throws AtomException {
-        super.execute();
-    }
-
-    @Override
-    public void init() throws AtomException {
-        super.init();
-    }
-
-    @Override
-    public void close() {
-        super.close();
-    }
-    
-    @Override
-    public void skip(long skipCount) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     protected long calcTotalCount() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    protected void initResource(ConcurrentHashMap<?, ?> dataMap) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void executeOnce() throws AtomException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    protected void closeResource() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void skip(long skipCount) throws AtomException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
