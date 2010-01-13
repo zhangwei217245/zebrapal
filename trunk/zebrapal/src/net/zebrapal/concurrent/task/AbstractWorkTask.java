@@ -28,7 +28,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     private TaskType tasktype;
 
-    protected  long completeCount;
+    protected long completeCount;
     
     protected long failedCount;
     
