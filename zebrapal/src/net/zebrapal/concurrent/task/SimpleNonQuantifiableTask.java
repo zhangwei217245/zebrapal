@@ -9,6 +9,7 @@ import java.util.Date;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.atom.AtomException;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
@@ -46,13 +47,21 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
                 setTaskState(TaskState.RUNNING);
             }
             getAtomOperation().init();
-            getAtomOperation().execute();
+            while(getTaskState().equals(TaskState.CREATED)||getTaskState().equals(TaskState.RUNNING)||getTaskState().equals(TaskState.SLEEP)){
+                TaskState state = getAtomOperation().execute();
+                setTaskState(state);
+            }
+
             setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
             setTaskState(TaskState.CRASHED);
             e.printStackTrace();
         } finally{
-            getAtomOperation().close();
+            try {
+                getAtomOperation().close();
+            } catch (AtomException ex) {
+                ex.printStackTrace();
+            }
             getTaskContext().getTaskPersistManager().updateTaskInfo(this);
         }
     }

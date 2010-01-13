@@ -88,7 +88,7 @@ public class TaskController {
     public void execute(IWorkTask command) {
         if (command == null)
             throw new NullPointerException();
-        scheduleAtFixedRate(command,0, 0, TimeUnit.NANOSECONDS);
+        executor.execute(command);
     }
 
     /**
@@ -98,11 +98,13 @@ public class TaskController {
      * @return
      */
     public Future<?> submit(IWorkTask command) {
-        return scheduleAtFixedRate(command,0, 0, TimeUnit.NANOSECONDS);
+        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
+        executor.submit(command);
+        return executor.submit(command);
     }
     
     public RunnableScheduledFuture<?> schedule(IWorkTask command,long delay,TimeUnit unit){
-        return (RunnableScheduledFuture<?>) scheduleAtFixedRate(command, delay,0, unit);
+        return (RunnableScheduledFuture<?>) executor.schedule(command, delay, unit);
     }
     
     public synchronized RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
@@ -114,7 +116,7 @@ public class TaskController {
     }
     
     public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command,long initialDelay,long delay,TimeUnit unit){
-        return (RunnableScheduledFuture<?>) scheduleAtFixedRate(command, initialDelay,-delay, unit);
+        return (RunnableScheduledFuture<?>) executor.scheduleWithFixedDelay(command, initialDelay,-delay, unit);
     }
 
     /**
@@ -224,9 +226,9 @@ public class TaskController {
 
     private class TaskThreadFactory implements ThreadFactory{
         public Thread newThread(Runnable r) {
-            String taskname = ((IWorkTask)r).getTaskName()==null?
-                "ZebraWorker_"+r.getClass().getName()+"_"+System.currentTimeMillis():
-                "ZebraWorker_"+((IWorkTask)r).getTaskName()+"_"+System.currentTimeMillis();
+            String taskname = 
+                "ZebraWorker_"+r.getClass().getName()+"_"+System.currentTimeMillis();
+                
             return new Thread(r,taskname);
         }
     }

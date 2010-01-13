@@ -2,6 +2,7 @@ package net.zebrapal.concurrent.task.atom;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
+import net.zebrapal.concurrent.enumrations.TaskState;
 
 /**
  * You need to implement an atom operation, and define some variable and initialize them in init() method
@@ -23,7 +24,7 @@ public interface IAtomOperation extends Serializable{
      * @return
      * @throws net.zebrapal.concurrent.task.atom.AtomException
      */
-    public void execute() throws AtomException;
+    public TaskState execute() throws AtomException;
     /**
      * release the parameters and the related resources..
      * @throws net.zebrapal.concurrent.task.atom.AtomException

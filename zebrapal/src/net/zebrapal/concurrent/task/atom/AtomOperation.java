@@ -6,6 +6,7 @@
 package net.zebrapal.concurrent.task.atom;
 
 import java.util.concurrent.ConcurrentHashMap;
+import net.zebrapal.concurrent.enumrations.TaskState;
 
 /**
  *
@@ -24,7 +25,7 @@ public class AtomOperation extends AbstractAtomOperation{
     }
 
     @Override
-    protected void executeOnce() throws AtomException {
+    protected TaskState executeOnce() throws AtomException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

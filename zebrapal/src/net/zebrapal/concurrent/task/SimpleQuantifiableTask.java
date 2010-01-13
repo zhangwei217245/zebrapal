@@ -1,9 +1,12 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.atom.AtomException;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
@@ -48,7 +51,8 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
                     continue;
                 }
                 try {
-                    getAtomOperation().execute();
+                    TaskState state = getAtomOperation().execute();
+                    setTaskState(state);
                     updateTaskProgress();
                 } catch (Exception e) {
                     failedCount++;
@@ -64,7 +68,11 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
             setTaskState(TaskState.CRASHED);
             e.printStackTrace();
         } finally{
-            getAtomOperation().close();
+            try {
+                getAtomOperation().close();
+            } catch (AtomException ex) {
+                ex.printStackTrace();
+            }
             getTaskContext().getTaskPersistManager().updateTaskInfo(this);
         }
     }
