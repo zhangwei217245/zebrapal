@@ -6,6 +6,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -96,13 +97,13 @@ public class TaskController implements ITaskController {
      * @param command
      * @return
      */
-    public RunnableScheduledFuture<?> submit(IWorkTask command) {
+    public ScheduledFuture<?> submit(IWorkTask command) {
         if (command == null)
             throw new NullPointerException();
         return schedule(command, 0, TimeUnit.NANOSECONDS);
     }
     
-    public RunnableScheduledFuture<?> schedule(IWorkTask command,long delay,TimeUnit unit){
+    public ScheduledFuture<?> schedule(IWorkTask command,long delay,TimeUnit unit){
         ((AbstractWorkTask)command).setTaskContext(this.taskContext);
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.schedule(command, delay, unit);
         taskContext.getWorkerMap().put(command, ft);

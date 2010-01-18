@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.task.IWorkTask;
@@ -76,7 +77,7 @@ public interface ITaskController {
      */
     void init(int corePoolSize);
 
-    RunnableScheduledFuture<?> schedule(IWorkTask command, long delay, TimeUnit unit);
+    ScheduledFuture<?> schedule(IWorkTask command, long delay, TimeUnit unit);
 
     RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command, long initialDelay, long period, TimeUnit unit);
 
@@ -96,6 +97,6 @@ public interface ITaskController {
      * @param command
      * @return
      */
-    RunnableScheduledFuture<?> submit(IWorkTask command);
+    ScheduledFuture<?> submit(IWorkTask command);
 
 }
