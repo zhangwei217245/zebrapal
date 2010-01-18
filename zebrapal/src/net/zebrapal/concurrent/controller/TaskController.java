@@ -88,7 +88,7 @@ public class TaskController {
     public void execute(IWorkTask command) {
         if (command == null)
             throw new NullPointerException();
-        executor.execute(command);
+        schedule(command, 0, TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -97,14 +97,18 @@ public class TaskController {
      * @param command
      * @return
      */
-    public Future<?> submit(IWorkTask command) {
-        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
-        executor.submit(command);
-        return executor.submit(command);
+    public RunnableScheduledFuture<?> submit(IWorkTask command) {
+        if (command == null)
+            throw new NullPointerException();
+        return schedule(command, 0, TimeUnit.NANOSECONDS);
     }
     
     public RunnableScheduledFuture<?> schedule(IWorkTask command,long delay,TimeUnit unit){
-        return (RunnableScheduledFuture<?>) executor.schedule(command, delay, unit);
+        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
+        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.schedule(command, delay, unit);
+        taskContext.getWorkerMap().put(command, ft);
+        taskContext.getTaskPersistManager().createTaskInfo(command);
+        return ft;
     }
     
     public synchronized RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
@@ -116,7 +120,11 @@ public class TaskController {
     }
     
     public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command,long initialDelay,long delay,TimeUnit unit){
-        return (RunnableScheduledFuture<?>) executor.scheduleWithFixedDelay(command, initialDelay,-delay, unit);
+        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
+        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.scheduleWithFixedDelay(command, initialDelay,-delay, unit);
+        taskContext.getWorkerMap().put(command, ft);
+        taskContext.getTaskPersistManager().createTaskInfo(command);
+        return ft;
     }
 
     /**

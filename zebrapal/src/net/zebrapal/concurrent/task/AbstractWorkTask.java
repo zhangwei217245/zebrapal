@@ -193,4 +193,9 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
         }
     }
 
+    @Override
+    public String toString(){
+        return tasktype+"_"+getTaskName()+" @ "+taskState+" : "+completeCount+" Completed";
+    }
+
 }
