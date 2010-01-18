@@ -58,4 +58,11 @@ public interface IWorkTask extends Runnable{
      * @param taskOwner the taskOwner to set
      */
     //public void setTaskOwner(String taskOwner);
+
+    /**
+     * 
+     * @return
+     */
+    @Override
+    public String toString();
 }

@@ -24,6 +24,7 @@ public class SpringJPATaskPersistManager implements ITaskPersistenceManager{
     }
 
     public void updateTaskInfo(IWorkTask task) {
+        System.out.println(task);
         System.out.println("update task infomation in database");
     }
 
