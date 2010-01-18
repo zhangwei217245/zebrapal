@@ -1,5 +1,10 @@
 package net.zebrapal.concurrent;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,8 +31,79 @@ public class TaskContext {
         
     }
 
-    public void initialize(){
+    public TaskContext(String propFileName){
+        try {
+            initialize(propFileName);
+        } catch (Exception e) {
+            System.out.println("TaskContext was failed to be initialized due to the error below: ");
+            e.printStackTrace();
+        }
+        
+    }
 
+    private void initialize(String propFileName) throws Exception{
+        File propFile = new File(propFileName);
+
+        Properties props = new Properties();
+
+        InputStream in = null;
+
+        try {
+            if(propFile.exists()){
+                System.out.println("Loading properties file: "+propFileName);
+                try {
+                    in = new BufferedInputStream(new FileInputStream(propFileName));
+                    props.load(in);
+                } catch (IOException ioe) {
+                    throw new ContextLoadException("Property File "+propFileName+
+                    " cannot be read, please check your property file", ioe);
+                }
+
+            }else if(propFileName!=null){
+                System.out.println("Loading properties file: "+propFileName);
+                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(propFileName);
+                if(in == null) {
+                    throw new ContextLoadException("Properties file: '"
+                        + propFileName + "' could not be found.");
+                }
+
+                in = new BufferedInputStream(in);
+                try {
+                    props.load(in);
+                } catch (IOException ioe) {
+                    throw  new ContextLoadException("Properties file: '"
+                            + propFileName + "' could not be read.", ioe);
+                }
+            }else {
+                System.out.println("default resource file in Zebrapal package: 'zebrapal.properties'");
+
+                in = getClass().getClassLoader().getResourceAsStream(
+                        "zebrapal.properties");
+
+                if (in == null) {
+                    in = getClass().getClassLoader().getResourceAsStream(
+                            "/zebrapal.properties");
+                }
+                if (in == null) {
+                    in = getClass().getClassLoader().getResourceAsStream(
+                            "net/zebrapal/zebrapal.properties");
+                }
+                if (in == null) {
+                    throw new ContextLoadException("Default zebrapal.properties not found in class path");
+                }
+                try {
+                    props.load(in);
+                } catch (IOException ioe) {
+                    throw new ContextLoadException("Resource properties file: 'net/zebrapal/zebrapal.properties' "
+                                    + "could not be read from the classpath.", ioe);
+                }
+            }
+            initialize(props);
+        } finally {
+            if(in != null) {
+                try { in.close(); } catch(IOException ignore) { /* ignore */ }
+            }
+        }
     }
     /**
      * initialize the TaskContext including the persistManager and TaskController
@@ -40,14 +116,17 @@ public class TaskContext {
         workerMap = new ConcurrentHashMap<IWorkTask, RunnableScheduledFuture>();
 
         //initialize the persistManager
-        String perisitManagerClassName = props.getProperty(ZebrapalPropertyKeys.KEY_PERSISTENCE_MANAGER_CLASS);
+        String persisitManagerClassName = props.getProperty(ZebrapalPropertyKeys.KEY_PERSISTENCE_MANAGER_CLASS);
         String str_persistInterval = props.getProperty(ZebrapalPropertyKeys.KEY_TASK_PERSIST_INTERVAL);
         setPersistInterval(Integer.parseInt(str_persistInterval));
-        Object persistManagerObj=Class.forName(perisitManagerClassName).newInstance();
-        if(persistManagerObj instanceof ITaskPersistenceManager){
-            ((ITaskPersistenceManager)persistManagerObj).init(props);
-            taskPersistManager = (ITaskPersistenceManager)persistManagerObj;
+        if(persisitManagerClassName!=null&&persisitManagerClassName.length()>0){
+            Object persistManagerObj=Class.forName(persisitManagerClassName).newInstance();
+            if(persistManagerObj instanceof ITaskPersistenceManager){
+                ((ITaskPersistenceManager)persistManagerObj).init(props);
+                taskPersistManager = (ITaskPersistenceManager)persistManagerObj;
+            }
         }
+        
         
         //initialize the TaskController
         taskController=TaskController.getInstance(this);
