@@ -4,7 +4,6 @@ import net.zebrapal.concurrent.task.IWorkTask;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.Future;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -20,7 +19,7 @@ import net.zebrapal.concurrent.task.AbstractWorkTask;
  *
  * @author X-Spirit
  */
-public class TaskController {
+public class TaskController implements ITaskController {
     
     private TaskContext taskContext;
 
