@@ -26,85 +26,26 @@ public class TaskContext {
     private TaskController taskController;
     private ITaskPersistenceManager taskPersistManager;
     private int persistInterval;
+    private Properties initProp;
 
     public TaskContext(){
         
     }
 
-    public TaskContext(String propFileName){
+    public void selfInit(){
         try {
-            initialize(propFileName);
+            if(initProp!=null){
+                initialize(initProp);
+            }else{
+                throw new NullPointerException("The initProp is Null!");
+            }
         } catch (Exception e) {
-            System.out.println("TaskContext was failed to be initialized due to the error below: ");
             e.printStackTrace();
+            
         }
-        
+
     }
-
-    private void initialize(String propFileName) throws Exception{
-        File propFile = new File(propFileName);
-
-        Properties props = new Properties();
-
-        InputStream in = null;
-
-        try {
-            if(propFile.exists()){
-                System.out.println("Loading properties file: "+propFileName);
-                try {
-                    in = new BufferedInputStream(new FileInputStream(propFileName));
-                    props.load(in);
-                } catch (IOException ioe) {
-                    throw new ContextLoadException("Property File "+propFileName+
-                    " cannot be read, please check your property file", ioe);
-                }
-
-            }else if(propFileName!=null){
-                System.out.println("Loading properties file: "+propFileName);
-                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(propFileName);
-                if(in == null) {
-                    throw new ContextLoadException("Properties file: '"
-                        + propFileName + "' could not be found.");
-                }
-
-                in = new BufferedInputStream(in);
-                try {
-                    props.load(in);
-                } catch (IOException ioe) {
-                    throw  new ContextLoadException("Properties file: '"
-                            + propFileName + "' could not be read.", ioe);
-                }
-            }else {
-                System.out.println("default resource file in Zebrapal package: 'zebrapal.properties'");
-
-                in = getClass().getClassLoader().getResourceAsStream(
-                        "zebrapal.properties");
-
-                if (in == null) {
-                    in = getClass().getClassLoader().getResourceAsStream(
-                            "/zebrapal.properties");
-                }
-                if (in == null) {
-                    in = getClass().getClassLoader().getResourceAsStream(
-                            "net/zebrapal/zebrapal.properties");
-                }
-                if (in == null) {
-                    throw new ContextLoadException("Default zebrapal.properties not found in class path");
-                }
-                try {
-                    props.load(in);
-                } catch (IOException ioe) {
-                    throw new ContextLoadException("Resource properties file: 'net/zebrapal/zebrapal.properties' "
-                                    + "could not be read from the classpath.", ioe);
-                }
-            }
-            initialize(props);
-        } finally {
-            if(in != null) {
-                try { in.close(); } catch(IOException ignore) { /* ignore */ }
-            }
-        }
-    }
+    
     /**
      * initialize the TaskContext including the persistManager and TaskController
      * @param props
@@ -115,6 +56,7 @@ public class TaskContext {
     public void initialize(Properties props)throws ClassNotFoundException, InstantiationException, IllegalAccessException{
         workerMap = new ConcurrentHashMap<IWorkTask, RunnableScheduledFuture>();
 
+        System.out.println("Initializing the Zebrapal Context...");
         //initialize the persistManager
         String persisitManagerClassName = props.getProperty(ZebrapalPropertyKeys.KEY_PERSISTENCE_MANAGER_CLASS);
         String str_persistInterval = props.getProperty(ZebrapalPropertyKeys.KEY_TASK_PERSIST_INTERVAL);
@@ -127,18 +69,24 @@ public class TaskContext {
             }
         }
         
-        
+        System.out.println("Initializing the Zebrapal Task Controller...");
         //initialize the TaskController
         taskController=TaskController.getInstance(this);
         taskController.init(props);
+
+        System.out.println("Zebrapal Context was successfully initialized...");
     }
     /**
      * Destroy the TaskContext
      */
     public void destroy(){
+        System.out.println("Zebrapal Context is Shuting down...");
         taskController.shutDownNow();
+        System.out.println("Zebrapal Task Controller was closed...");
         persistWorkerMap();
+        System.out.println("Persist Zebrapal Tasks...");
         taskPersistManager.close();
+        System.out.println("Zebrapal Context was successfully closed...");
     }
     /**
      * Persist all the workTask which is cancelled and done in your workmap with recursion;
@@ -188,9 +136,10 @@ public class TaskContext {
     }
 
     public void setPersistInterval(int persistInterval) {
-        if(persistInterval<=0||persistInterval>1009){
+        if(persistInterval>0&&persistInterval<=1009){
             if(NumberCalculate.isPrimeInteger(persistInterval)){
                 this.persistInterval = persistInterval;
+                System.out.println("####Persist Interval is : "+this.persistInterval);
             }else{
                 System.out.println("An non-prime number was given, and persist interval will be set to 1009 as default");
                 this.persistInterval = 1009;
@@ -200,5 +149,15 @@ public class TaskContext {
             this.persistInterval = 1009;
         }
     }
+
+    public Properties getInitProp() {
+        return initProp;
+    }
+
+    public void setInitProp(Properties initProp) {
+        this.initProp = initProp;
+    }
+
+    
 
 }
