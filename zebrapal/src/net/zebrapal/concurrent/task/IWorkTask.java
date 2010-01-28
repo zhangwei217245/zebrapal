@@ -9,6 +9,7 @@ import java.util.Date;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.atom.IAtomOperation;
 import net.zebrapal.concurrent.task.disc.ITaskDetail;
 
 /**
@@ -32,6 +33,7 @@ public interface IWorkTask extends Runnable{
     public ITaskDetail getTaskDetail();
 
     public void setTaskDetail(ITaskDetail taskDetail);
+    public IAtomOperation getAtomOperation() ;
 
     public boolean isAutoRestorable();
     

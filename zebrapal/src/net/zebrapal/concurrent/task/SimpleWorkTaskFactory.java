@@ -128,4 +128,15 @@ public class SimpleWorkTaskFactory {
         this.createDate = createDate;
         return this;
     }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public SimpleWorkTaskFactory setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+        return this;
+    }
+
+    
 }
