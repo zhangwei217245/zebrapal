@@ -11,6 +11,7 @@ import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
+import net.zebrapal.concurrent.task.disc.ITaskDetail;
 
 /**
  *
@@ -27,6 +28,8 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     private String taskOwner;
 
     private TaskType tasktype;
+
+    private ITaskDetail taskDetail;
 
     protected int completeCount;
     
@@ -131,6 +134,23 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
         return true;
     }
 
+    public boolean isAutoRestorable() {
+        if(taskState.equals(TaskState.SLEEP)){
+            return true;
+        }else if(taskState.equals(TaskState.HIBERNATE)){
+            return true;
+        }else if(taskState.equals(TaskState.CANCELLED)){
+            return false;
+        }else if(taskState.equals(TaskState.CRASHED)){
+            return false;
+        }else if(taskState.equals(TaskState.FINISHED)){
+            return false;
+        }
+        return true;
+    }
+
+
+
     /**
      * @return the taskOwner
      */
@@ -186,6 +206,15 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
+    public ITaskDetail getTaskDetail() {
+        return this.taskDetail;
+    }
+
+    public void setTaskDetail(ITaskDetail taskDetail) {
+        this.taskDetail = taskDetail;
+    }
+
 
     protected void updateTaskProgress(){
         if(++completeCount%getTaskContext().getPersistInterval()==0){
