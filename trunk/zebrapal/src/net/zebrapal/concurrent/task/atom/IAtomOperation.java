@@ -18,7 +18,7 @@ public interface IAtomOperation extends Serializable{
      * skip some operations after the task is restored..
      * @param skipCount
      */
-    public void skip(long skipCount) throws AtomException;
+    public void skip(int skipCount) throws AtomException;
     /**
      * execute the atom operation.
      * @return
@@ -34,7 +34,7 @@ public interface IAtomOperation extends Serializable{
      * Get the total count of the operations
      * @return
      */
-    public long getTotalCount();
+    public int getTotalCount();
 
     /**
      * 

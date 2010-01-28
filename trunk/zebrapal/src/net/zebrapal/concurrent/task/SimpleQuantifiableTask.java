@@ -37,8 +37,8 @@ public class SimpleQuantifiableTask extends AbstractWorkTask{
     public void run() {
         try {
             getAtomOperation().init();
-            setCompleteCount(0L);
-            setFailedCount(0L);
+            setCompleteCount(0);
+            setFailedCount(0);
             if(getTaskState().equals(TaskState.CREATED)){
                 getTaskContext().getTaskPersistManager().createTaskInfo(this);
             }

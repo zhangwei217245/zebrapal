@@ -43,8 +43,8 @@ public class SimplePredictableTask extends AbstractWorkTask{
         try {
             getAtomOperation().init();
             setTotalCount(getAtomOperation().getTotalCount());
-            setCompleteCount(0L);
-            setFailedCount(0L);
+            setCompleteCount(0);
+            setFailedCount(0);
             if(getTaskState().equals(TaskState.CREATED)){
                 getTaskContext().getTaskPersistManager().createTaskInfo(this);
             }

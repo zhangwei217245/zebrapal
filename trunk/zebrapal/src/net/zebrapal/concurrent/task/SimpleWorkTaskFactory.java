@@ -48,7 +48,7 @@ public class SimpleWorkTaskFactory {
         }
     }
 
-    public AbstractWorkTask restoreTask(long completeCount,long failedCount,long totalCount){
+    public AbstractWorkTask restoreTask(int completeCount,int failedCount,int totalCount){
         checkFields();
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
             AbstractWorkTask awt = new SimpleQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);

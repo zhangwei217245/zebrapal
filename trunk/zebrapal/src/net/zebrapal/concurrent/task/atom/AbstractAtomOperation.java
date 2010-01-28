@@ -16,10 +16,10 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
     
     protected ConcurrentHashMap<?, ?> dataMap;
 
-    protected long totalCount;
+    protected int totalCount;
 
     @Override
-    public long getTotalCount(){
+    public int getTotalCount(){
         return this.totalCount;
     }
     /**
@@ -27,7 +27,7 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
      * It will be implemented by the users.
      * @return
      */
-    protected abstract long calcTotalCount();
+    protected abstract int calcTotalCount();
 
     protected abstract void initResource(ConcurrentHashMap<?,?> dataMap) throws Exception;
 
