@@ -15,7 +15,7 @@ import net.zebrapal.concurrent.enumrations.TaskState;
 public class AtomOperation extends AbstractAtomOperation{
 
     @Override
-    protected long calcTotalCount() {
+    protected int calcTotalCount() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -34,7 +34,7 @@ public class AtomOperation extends AbstractAtomOperation{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void skip(long skipCount) throws AtomException {
+    public void skip(int skipCount) throws AtomException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

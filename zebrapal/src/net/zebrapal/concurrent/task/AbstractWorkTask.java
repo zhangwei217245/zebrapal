@@ -28,11 +28,11 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
 
     private TaskType tasktype;
 
-    protected long completeCount;
+    protected int completeCount;
     
-    protected long failedCount;
+    protected int failedCount;
     
-    protected long totalCount;
+    protected int totalCount;
 
     private IAtomOperation atomOperation;
 
@@ -77,14 +77,14 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @return the completeCount
      */
-    public long getCompleteCount() {
+    public int getCompleteCount() {
         return completeCount;
     }
 
     /**
      * @param completeCount the completeCount to set
      */
-    protected void setCompleteCount(long completeCount) {
+    protected void setCompleteCount(int completeCount) {
         this.completeCount = completeCount;
     }
 
@@ -99,14 +99,14 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @return the failedCount
      */
-    public long getFailedCount() {
+    public int getFailedCount() {
         return failedCount;
     }
 
     /**
      * @param failedCount the failedCount to set
      */
-    protected void setFailedCount(long failedCount) {
+    protected void setFailedCount(int failedCount) {
         this.failedCount = failedCount;
     }
 
@@ -148,14 +148,14 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
     /**
      * @return the totalCount
      */
-    public long getTotalCount() {
+    public int getTotalCount() {
         return totalCount;
     }
 
     /**
      * @param totalCount the totalCount to set
      */
-    protected void setTotalCount(long totalCount) {
+    protected void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
     }
 

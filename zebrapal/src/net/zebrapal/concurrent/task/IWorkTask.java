@@ -18,11 +18,11 @@ public interface IWorkTask extends Runnable{
     
     public TaskContext getTaskContext();
 
-    public long getFailedCount();
+    public int getFailedCount();
 
-    public long getCompleteCount();
+    public int getCompleteCount();
 
-    public long getTotalCount();
+    public int getTotalCount();
 
     public Date getCreateDate();
 
