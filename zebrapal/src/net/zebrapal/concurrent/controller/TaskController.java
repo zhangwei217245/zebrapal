@@ -21,28 +21,22 @@ import net.zebrapal.concurrent.task.AbstractWorkTask;
  * @author X-Spirit
  */
 public class TaskController implements ITaskController {
-    
+
     private TaskContext taskContext;
-
     private ScheduledExecutorService executor;
-
     private static TaskController taskController = new TaskController();
-    
 
-    private TaskController(){
-        
+    private TaskController() {
     }
 
-
-
-    public static TaskController getInstance(TaskContext context){
+    public static TaskController getInstance(TaskContext context) {
         return taskController.setTaskContext(context);
     }
 
     /**
      * initialize the ScheduledThreadPoolExecutor with 20 of corePoolSize
      */
-    public void init(){
+    public void init() {
         init(20);
     }
 
@@ -50,12 +44,12 @@ public class TaskController implements ITaskController {
      * initialize the ScheduledThreadPoolExecutor with the specific Properties or 20 if the properties is not available.
      * @param prop
      */
-    public void init(Properties prop){
+    public void init(Properties prop) {
         int corePoolSize = 20;
-        if(prop!=null&&prop.containsKey(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE)){
-            String str_corePoolSize=prop.getProperty(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE);
+        if (prop != null && prop.containsKey(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE)) {
+            String str_corePoolSize = prop.getProperty(ZebrapalPropertyKeys.KEY_CORE_POOL_SIZE);
 
-            if(str_corePoolSize!=null&&str_corePoolSize.length()>0){
+            if (str_corePoolSize != null && str_corePoolSize.length() > 0) {
                 corePoolSize = Integer.parseInt(str_corePoolSize);
             }
         }
@@ -66,12 +60,12 @@ public class TaskController implements ITaskController {
      * initialize the ScheduledThreadPoolExecutor with the specific corePoolSize
      * @param corePoolSize
      */
-    public void init(int corePoolSize){
-        executor=new ScheduledThreadPoolExecutor(corePoolSize);
-        ((ScheduledThreadPoolExecutor)executor).setThreadFactory(new TaskThreadFactory());
+    public void init(int corePoolSize) {
+        executor = new ScheduledThreadPoolExecutor(corePoolSize);
+        ((ScheduledThreadPoolExecutor) executor).setThreadFactory(new TaskThreadFactory());
         List<IWorkTask> worklist = taskContext.getTaskPersistManager().queryTaskInfo();
-        if(worklist!=null){
-            for(IWorkTask task:worklist){
+        if (worklist != null) {
+            for (IWorkTask task : worklist) {
                 this.submit(task);
             }
         }
@@ -86,8 +80,9 @@ public class TaskController implements ITaskController {
      */
     @Deprecated
     public void execute(IWorkTask command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         schedule(command, 0, TimeUnit.NANOSECONDS);
     }
 
@@ -98,32 +93,39 @@ public class TaskController implements ITaskController {
      * @return
      */
     public ScheduledFuture<?> submit(IWorkTask command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         return schedule(command, 0, TimeUnit.NANOSECONDS);
     }
-    
-    public ScheduledFuture<?> schedule(IWorkTask command,long delay,TimeUnit unit){
-        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
+
+    public ScheduledFuture<?> schedule(IWorkTask command, long delay, TimeUnit unit) {
+        ((AbstractWorkTask) command).setTaskContext(this.taskContext);
         RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.schedule(command, delay, unit);
         taskContext.getWorkerMap().put(command, ft);
-        taskContext.getTaskPersistManager().createTaskInfo(command);
+        if (command.getTaskState().equals(TaskState.CREATED)) {
+            taskContext.getTaskPersistManager().createTaskInfo(command);
+        }
         return ft;
     }
-    
-    public synchronized RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command,long initialDelay,long period,TimeUnit unit){
-        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
-        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>)executor.scheduleAtFixedRate(command, initialDelay,period, unit);
+
+    public synchronized RunnableScheduledFuture<?> scheduleAtFixedRate(IWorkTask command, long initialDelay, long period, TimeUnit unit) {
+        ((AbstractWorkTask) command).setTaskContext(this.taskContext);
+        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.scheduleAtFixedRate(command, initialDelay, period, unit);
         taskContext.getWorkerMap().put(command, ft);
-        taskContext.getTaskPersistManager().createTaskInfo(command);
+        if (command.getTaskState().equals(TaskState.CREATED)) {
+            taskContext.getTaskPersistManager().createTaskInfo(command);
+        }
         return ft;
     }
-    
-    public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command,long initialDelay,long delay,TimeUnit unit){
-        ((AbstractWorkTask)command).setTaskContext(this.taskContext);
-        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.scheduleWithFixedDelay(command, initialDelay,-delay, unit);
+
+    public RunnableScheduledFuture<?> scheduleWithFixedDelay(IWorkTask command, long initialDelay, long delay, TimeUnit unit) {
+        ((AbstractWorkTask) command).setTaskContext(this.taskContext);
+        RunnableScheduledFuture<?> ft = (RunnableScheduledFuture<?>) executor.scheduleWithFixedDelay(command, initialDelay, -delay, unit);
         taskContext.getWorkerMap().put(command, ft);
-        taskContext.getTaskPersistManager().createTaskInfo(command);
+        if (command.getTaskState().equals(TaskState.CREATED)) {
+            taskContext.getTaskPersistManager().createTaskInfo(command);
+        }
         return ft;
     }
 
@@ -132,41 +134,41 @@ public class TaskController implements ITaskController {
      * For Nonquantifiable Task, it may not fall asleep...
      * @param task
      */
-    public synchronized void fallAsleep(IWorkTask task){
+    public synchronized void fallAsleep(IWorkTask task) {
         try {
-            ((AbstractWorkTask)task).setTaskState(TaskState.SLEEP);
+            ((AbstractWorkTask) task).setTaskState(TaskState.SLEEP);
             taskContext.getTaskPersistManager().updateTaskInfo(task);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Hibernate the task. The task will be removed from the workerMap and will be persisted once.
      * @param task
      */
-    public synchronized void hibernate(IWorkTask task){
+    public synchronized void hibernate(IWorkTask task) {
         try {
-            ((AbstractWorkTask)task).setTaskState(TaskState.HIBERNATE);
+            ((AbstractWorkTask) task).setTaskState(TaskState.HIBERNATE);
             remove(task);
             taskContext.getTaskPersistManager().updateTaskInfo(task);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Cancel a Task forcibly. In this situation, the task persistence manager will not persist this task.
      * If a task need to be persisted after the controller stops its work, please call the stop method.
      * @param task
      * @return
      */
-    public synchronized boolean cancelTask(IWorkTask task){
+    public synchronized boolean cancelTask(IWorkTask task) {
         try {
-            if(!taskContext.getWorkerMap().get(task).isCancelled()){
+            if (!taskContext.getWorkerMap().get(task).isCancelled()) {
                 remove(task);
-            }else{
-                ((AbstractWorkTask)task).setTaskState(TaskState.CANCELLED);
+            } else {
+                ((AbstractWorkTask) task).setTaskState(TaskState.CANCELLED);
                 taskContext.getWorkerMap().get(task).cancel(true);
                 remove(task);
             }
@@ -176,40 +178,41 @@ public class TaskController implements ITaskController {
             return false;
         }
     }
+
     /**
      * Remove the task from the Blocking Queue of SchedulerExecutor forcibly
      * @param command
      * @return
      */
-    private synchronized boolean remove(IWorkTask command){
-        if(command.getTasktype().equals(TaskType.NONQUANTIFIABLE)){
+    private synchronized boolean remove(IWorkTask command) {
+        if (command.getTasktype().equals(TaskType.NONQUANTIFIABLE)) {
             taskContext.getWorkerMap().get(command).cancel(true);
         }
         taskContext.getWorkerMap().remove(command);
-        return ((ScheduledThreadPoolExecutor)executor).remove(command);
+        return ((ScheduledThreadPoolExecutor) executor).remove(command);
     }
 
     /**
      * Clean up all the canceled work from both the workMap and the executor
      */
-    public synchronized void cleanUpCanceledTask(){
+    public synchronized void cleanUpCanceledTask() {
         Set<IWorkTask> keys = taskContext.getWorkerMap().keySet();
-        for(IWorkTask task:keys){
-            if(taskContext.getWorkerMap().get(task).isCancelled()){
+        for (IWorkTask task : keys) {
+            if (taskContext.getWorkerMap().get(task).isCancelled()) {
                 taskContext.getWorkerMap().remove(task);
             }
         }
-        ((ScheduledThreadPoolExecutor)executor).purge();
+        ((ScheduledThreadPoolExecutor) executor).purge();
     }
 
-    public synchronized void shutDown(){
-        if(!(executor.isTerminated()&&executor.isShutdown())){
+    public synchronized void shutDown() {
+        if (!(executor.isTerminated() && executor.isShutdown())) {
             executor.shutdown();
         }
     }
-    
-    public synchronized List<Runnable> shutDownNow(){
-        if(!(executor.isTerminated()&&executor.isShutdown())){
+
+    public synchronized List<Runnable> shutDownNow() {
+        if (!(executor.isTerminated() && executor.isShutdown())) {
             return executor.shutdownNow();
         }
         return null;
@@ -232,12 +235,13 @@ public class TaskController implements ITaskController {
         return this;
     }
 
-    private class TaskThreadFactory implements ThreadFactory{
+    private class TaskThreadFactory implements ThreadFactory {
+
         public Thread newThread(Runnable r) {
-            String taskname = 
-                "ZebraWorker_"+r.getClass().getName()+"_"+System.currentTimeMillis();
-                
-            return new Thread(r,taskname);
+            String taskname =
+                    "ZebraWorker_" + r.getClass().getName() + "_" + System.currentTimeMillis();
+
+            return new Thread(r, taskname);
         }
     }
 }

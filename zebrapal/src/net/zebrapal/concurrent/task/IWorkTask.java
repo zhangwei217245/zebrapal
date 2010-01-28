@@ -9,6 +9,7 @@ import java.util.Date;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.task.disc.ITaskDetail;
 
 /**
  *
@@ -27,6 +28,12 @@ public interface IWorkTask extends Runnable{
     public Date getCreateDate();
 
     public TaskType getTasktype();
+
+    public ITaskDetail getTaskDetail();
+
+    public void setTaskDetail(ITaskDetail taskDetail);
+
+    public boolean isAutoRestorable();
     
     //public void setTasktype(TaskType tasktype);
 
