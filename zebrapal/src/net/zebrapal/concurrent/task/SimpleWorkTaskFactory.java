@@ -32,6 +32,9 @@ public class SimpleWorkTaskFactory {
             throw new NullPointerException("taskContext cannot be null");
         }
         if(taskName == null||taskName.length()==0){
+            if(atomOperation!=null){
+                taskName = atomOperation.getClass().getCanonicalName()+"_"+System.currentTimeMillis();
+            }
             taskName = "ZebraWorker_"+System.currentTimeMillis();
         }
         if(taskOwner == null||taskOwner.length()==0){
