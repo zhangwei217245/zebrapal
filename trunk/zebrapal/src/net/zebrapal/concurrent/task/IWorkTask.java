@@ -36,7 +36,8 @@ public interface IWorkTask extends Runnable{
     public IAtomOperation getAtomOperation() ;
 
     public boolean isAutoRestorable();
-    
+
+    public boolean isRunningState();
     //public void setTasktype(TaskType tasktype);
 
     //public void setTaskController(TaskController taskController);
