@@ -118,7 +118,7 @@ public abstract class AbstractWorkTask implements IWorkTask,Serializable{
      * CRASHED and FINISHED will not be set during this decision
      * @return
      */
-    protected boolean isRunningState(){
+    public boolean isRunningState(){
         //boolean b = true;
         if(taskState.equals(TaskState.SLEEP)){
             return true;

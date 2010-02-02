@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Future;
 import java.util.concurrent.RunnableScheduledFuture;
 import net.zebrapal.concurrent.controller.TaskController;
 import net.zebrapal.concurrent.persist.ITaskPersistenceManager;
@@ -158,6 +160,14 @@ public class TaskContext {
         this.initProp = initProp;
     }
 
-    
+    public Entry<IWorkTask,RunnableScheduledFuture> searchTaskByName(String keyWord){
+        for(Entry<IWorkTask,RunnableScheduledFuture> entry:workerMap.entrySet()){
+            IWorkTask task = entry.getKey();
+            if(task!=null&&task.getTaskName().contains(keyWord)){
+                return entry;
+            }
+        }
+        return null;
+    }
 
 }
