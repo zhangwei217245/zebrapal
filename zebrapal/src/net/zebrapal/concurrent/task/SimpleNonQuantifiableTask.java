@@ -37,32 +37,10 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
     }
 
     @Override
-    public void run() {
-        try {
-            if(getTaskState().equals(TaskState.CREATED)){
-                getTaskContext().getTaskPersistManager().createTaskInfo(this);
-            }
-            if(getTaskState().equals(TaskState.RESTORED)){
-                getAtomOperation().skip(completeCount);
-                setTaskState(TaskState.RUNNING);
-            }
-            getAtomOperation().init();
-            while(getTaskState().equals(TaskState.CREATED)||getTaskState().equals(TaskState.RUNNING)||getTaskState().equals(TaskState.SLEEP)){
-                TaskState state = getAtomOperation().execute();
-                setTaskState(state);
-            }
-
-            setTaskState(TaskState.FINISHED);
-        } catch (Exception e) {
-            setTaskState(TaskState.CRASHED);
-            e.printStackTrace();
-        } finally{
-            try {
-                getAtomOperation().close();
-            } catch (AtomException ex) {
-                ex.printStackTrace();
-            }
-            getTaskContext().getTaskPersistManager().updateTaskInfo(this);
+    public void doExecute() throws Exception {
+        while (getTaskState().equals(TaskState.CREATED) || getTaskState().equals(TaskState.RUNNING) || getTaskState().equals(TaskState.SLEEP)) {
+            TaskState state = getAtomOperation().execute();
+            setTaskState(state);
         }
     }
 
