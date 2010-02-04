@@ -46,7 +46,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
                 }
             }
             if (getTaskState().equals(TaskState.CREATED)) {
-                getTaskContext().getTaskPersistManager().createTaskInfo(this);
+                notifyObservers();
             }
             if (getTaskState().equals(TaskState.RESTORED)) {
                 getAtomOperation().skip(completeCount);
