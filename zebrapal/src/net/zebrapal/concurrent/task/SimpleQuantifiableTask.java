@@ -42,7 +42,7 @@ public class SimpleQuantifiableTask extends AbstractWorkTask {
             try {
                 TaskState state = getAtomOperation().execute();
                 setTaskState(state);
-                updateTaskProgress();
+                updateTaskProgressByInterval(this);
             } catch (Exception e) {
                 failedCount++;
                 e.printStackTrace();

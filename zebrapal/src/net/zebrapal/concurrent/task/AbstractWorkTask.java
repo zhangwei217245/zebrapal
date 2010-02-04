@@ -55,7 +55,6 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
 
             doExecute();
 
-
             setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
             setTaskState(TaskState.CRASHED);
@@ -66,7 +65,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             } catch (AtomException ex) {
                 ex.printStackTrace();
             }
-            getTaskContext().getTaskPersistManager().updateTaskInfo(this);
+            notifyObservers();
         }
 
     }
@@ -245,9 +244,12 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
         this.taskDetail = taskDetail;
     }
 
-    protected void updateTaskProgress() {
+    
+
+    protected void updateTaskProgressByInterval(AbstractWorkTask task) {
         if (++completeCount % getTaskContext().getPersistInterval() == 0) {
-            getTaskContext().getTaskPersistManager().updateTaskInfo(this);
+            //getTaskContext().getTaskPersistManager().updateTaskInfo(task);
+            notifyObservers();
         }
     }
 

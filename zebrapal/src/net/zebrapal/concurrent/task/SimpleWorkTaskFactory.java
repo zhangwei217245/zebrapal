@@ -4,6 +4,7 @@ import java.util.Date;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
+import net.zebrapal.concurrent.listener.TaskPersistenceListener;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
@@ -50,38 +51,43 @@ public class SimpleWorkTaskFactory {
 
     public AbstractWorkTask restoreTask(int completeCount,int failedCount,int totalCount){
         checkFields();
+        AbstractWorkTask awt = null;
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimpleQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
-            return awt;
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimplePredictableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimplePredictableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
-            return awt;
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            AbstractWorkTask awt = new SimpleNonQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleNonQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
-            return awt;
         }
-        return null;
+        if(awt!=null){
+            awt.addObserver(new TaskPersistenceListener());
+        }
+        return awt;
     }
 
     public AbstractWorkTask createTask(){
         checkFields();
+        AbstractWorkTask awt = null;
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            return new SimpleQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            return new SimplePredictableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimplePredictableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            return new SimpleNonQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleNonQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }
-        return null;
+        if(awt!=null){
+            awt.addObserver(new TaskPersistenceListener());
+        }
+        return awt;
     }
 
     /**
