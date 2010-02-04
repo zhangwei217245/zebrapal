@@ -5,12 +5,9 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
-import net.zebrapal.concurrent.task.atom.AtomException;
 import net.zebrapal.concurrent.task.atom.IAtomOperation;
 
 /**
