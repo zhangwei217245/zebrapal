@@ -17,6 +17,7 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
 public class SimplePredictableTask extends AbstractWorkTask {
 
     private static final long serialVersionUID = -6416131919976886576L;
+    
 
     public SimplePredictableTask(TaskState taskstate) {
         setTaskState(taskstate);
@@ -36,11 +37,20 @@ public class SimplePredictableTask extends AbstractWorkTask {
 
     @Override
     public void doExecute() throws Exception {
+        //getAtomOperation().skip(this.completeCount+this.failedCount);
         while (getTaskState().equals(TaskState.CREATED) || getTaskState().equals(TaskState.RUNNING) || getTaskState().equals(TaskState.SLEEP)) {
             if (getTaskState().equals(TaskState.SLEEP)) {
                 continue;
             }
             try {
+                ++curindex;
+                if(curindex>=skipIndex&&curindex<(skipIndex+skipCount)){
+                    curindex+=skipCount;
+                    getAtomOperation().skip(skipCount);
+                    this.setTotalCount(totalCount-skipCount);
+                }
+                
+                
                 TaskState state = getAtomOperation().execute();
                 setTaskState(state);
                 updateTaskProgressByInterval(this);

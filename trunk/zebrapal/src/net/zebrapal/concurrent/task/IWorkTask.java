@@ -69,6 +69,7 @@ public interface IWorkTask extends Runnable{
      */
     //public void setTaskOwner(String taskOwner);
 
+    public void skipAndIgnoreCount(int startIdx,int skipCount);
     /**
      * 
      * @return
