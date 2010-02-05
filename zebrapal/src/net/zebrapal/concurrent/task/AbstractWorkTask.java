@@ -32,6 +32,12 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     private IAtomOperation atomOperation;
     private Date createDate;
 
+    protected int skipIndex;
+    protected int skipCount;
+
+    protected int curindex=0;
+    protected int skipedCount=0;
+
     protected abstract void doExecute() throws Exception;
 
     @Override
@@ -46,10 +52,11 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
                 }
             }
             if (getTaskState().equals(TaskState.CREATED)) {
+                super.setChanged();
                 notifyObservers();
             }
             if (getTaskState().equals(TaskState.RESTORED)) {
-                getAtomOperation().skip(completeCount);
+                getAtomOperation().skip(completeCount+failedCount);
                 setTaskState(TaskState.RUNNING);
             }
 
@@ -65,6 +72,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             } catch (AtomException ex) {
                 ex.printStackTrace();
             }
+            super.setChanged();
             notifyObservers();
         }
 
@@ -244,11 +252,17 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
         this.taskDetail = taskDetail;
     }
 
+    public void skipAndIgnoreCount(int startIdx, int skipCount) {
+        this.skipIndex = startIdx;
+        this.skipCount = skipCount;
+    }
+
     
 
     protected void updateTaskProgressByInterval(AbstractWorkTask task) {
         if (++completeCount % getTaskContext().getPersistInterval() == 0) {
             //getTaskContext().getTaskPersistManager().updateTaskInfo(task);
+            super.setChanged();
             notifyObservers();
         }
     }

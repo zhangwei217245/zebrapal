@@ -32,11 +32,20 @@ public class SimpleQuantifiableTask extends AbstractWorkTask {
 
     @Override
     public void doExecute() throws Exception {
+        //getAtomOperation().skip(this.completeCount+this.failedCount);
         while (getTaskState().equals(TaskState.CREATED) || getTaskState().equals(TaskState.RUNNING) || getTaskState().equals(TaskState.SLEEP)) {
             if (getTaskState().equals(TaskState.SLEEP)) {
                 continue;
             }
             try {
+                ++curindex;
+                if(curindex>=skipIndex&&curindex<(skipIndex+skipCount)){
+                    curindex+=skipCount;
+                    getAtomOperation().skip(skipCount);
+                    this.setTotalCount(totalCount-skipCount);
+                }
+
+                getAtomOperation().skip(this.completeCount+this.failedCount);
                 TaskState state = getAtomOperation().execute();
                 setTaskState(state);
                 updateTaskProgressByInterval(this);

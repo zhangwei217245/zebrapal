@@ -5,7 +5,7 @@
 
 package net.zebrapal.concurrent.task.atom;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import net.zebrapal.concurrent.enumrations.TaskState;
 
 /**
@@ -14,7 +14,7 @@ import net.zebrapal.concurrent.enumrations.TaskState;
  */
 public abstract class AbstractAtomOperation implements IAtomOperation{
     
-    protected ConcurrentHashMap<?, ?> dataMap;
+    protected transient ConcurrentMap dataMap;
 
     protected int totalCount;
 
@@ -29,7 +29,7 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
      */
     protected abstract int calcTotalCount();
 
-    protected abstract void initResource(ConcurrentHashMap<?,?> dataMap) throws Exception;
+    protected abstract void initResource(ConcurrentMap dataMap) throws Exception;
 
     protected abstract TaskState executeOnce() throws AtomException;
 
@@ -38,6 +38,7 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
     public void init() throws AtomException {
         try {
             initResource(dataMap);
+            this.totalCount = calcTotalCount();
         } catch (Exception e) {
             throw new AtomException("AtomException:", AtomPeriod.INIT,e);
         }
@@ -69,11 +70,11 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
         
     }
 
-    public ConcurrentHashMap<?, ?> getDataMap() {
+    public ConcurrentMap getDataMap() {
         return dataMap;
     }
     
-    public void setDataMap(ConcurrentHashMap<?, ?> dataMap) {
+    public void setDataMap(ConcurrentMap dataMap) {
         this.dataMap = dataMap;
     }
 

@@ -1,7 +1,7 @@
 package net.zebrapal.concurrent.task.atom;
 
 import java.io.Serializable;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import net.zebrapal.concurrent.enumrations.TaskState;
 
 /**
@@ -40,5 +40,5 @@ public interface IAtomOperation extends Serializable{
      * 
      * @param dataMap
      */
-    public void setDataMap(ConcurrentHashMap<?,?> dataMap);
+    public void setDataMap(ConcurrentMap dataMap);
 }
