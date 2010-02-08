@@ -7,6 +7,7 @@ package net.zebrapal.concurrent.task;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Observable;
+import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
@@ -74,6 +75,13 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             }
             super.setChanged();
             notifyObservers();
+            /*try {
+            System.out.println("Getting the Task Result");
+            Object obj = getTaskContext().getTaskController().cancelTask(this);
+            System.out.println(obj);
+            } catch (Exception e) {
+            e.printStackTrace();
+            }*/
         }
 
     }
@@ -260,7 +268,10 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     
 
     protected void updateTaskProgressByInterval(AbstractWorkTask task) {
-        if (++completeCount % getTaskContext().getPersistInterval() == 0) {
+        if(task.isRunningState()){
+            completeCount++;
+        }
+        if (completeCount % getTaskContext().getPersistInterval() == 0) {
             //getTaskContext().getTaskPersistManager().updateTaskInfo(task);
             super.setChanged();
             notifyObservers();
