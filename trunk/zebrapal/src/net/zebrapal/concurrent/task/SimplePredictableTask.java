@@ -52,10 +52,11 @@ public class SimplePredictableTask extends AbstractWorkTask {
                 
                 
                 TaskState state = getAtomOperation().execute();
-                setTaskState(state);
                 updateTaskProgressByInterval(this);
+                setTaskState(state);
             } catch (Exception e) {
                 failedCount++;
+                setTaskState(TaskState.CRASHED);
                 e.printStackTrace();
             }
             if (!isRunningState()) {

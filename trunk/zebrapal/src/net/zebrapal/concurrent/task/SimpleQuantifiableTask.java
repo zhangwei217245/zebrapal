@@ -45,12 +45,13 @@ public class SimpleQuantifiableTask extends AbstractWorkTask {
                     this.setTotalCount(totalCount-skipCount);
                 }
 
-                getAtomOperation().skip(this.completeCount+this.failedCount);
+                
                 TaskState state = getAtomOperation().execute();
                 setTaskState(state);
                 updateTaskProgressByInterval(this);
             } catch (Exception e) {
                 failedCount++;
+                setTaskState(TaskState.CRASHED);
                 e.printStackTrace();
             }
             setTotalCount(completeCount + failedCount);
