@@ -31,7 +31,7 @@ public abstract class AbstractAtomOperation implements IAtomOperation{
 
     protected abstract void initResource(ConcurrentMap dataMap) throws Exception;
 
-    protected abstract TaskState executeOnce() throws AtomException;
+    protected abstract TaskState executeOnce() throws Exception;
 
     protected abstract void closeResource();
 
