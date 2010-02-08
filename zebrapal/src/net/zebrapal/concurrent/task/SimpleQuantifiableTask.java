@@ -38,14 +38,13 @@ public class SimpleQuantifiableTask extends AbstractWorkTask {
                 continue;
             }
             try {
-                ++curindex;
                 if(curindex>=skipIndex&&curindex<(skipIndex+skipCount)){
                     curindex+=skipCount;
                     getAtomOperation().skip(skipCount);
                     this.setTotalCount(totalCount-skipCount);
                 }
+                curindex++;
 
-                
                 TaskState state = getAtomOperation().execute();
                 setTaskState(state);
                 updateTaskProgressByInterval(this);
