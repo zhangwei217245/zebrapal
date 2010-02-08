@@ -60,9 +60,9 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
                 getAtomOperation().skip(completeCount+failedCount);
                 setTaskState(TaskState.RUNNING);
             }
-
+            long startTime = System.currentTimeMillis();
             doExecute();
-
+            System.out.println("Task Executed Elasped: "+(System.currentTimeMillis()-startTime)+" milliseconds.");
             setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
             setTaskState(TaskState.CRASHED);
