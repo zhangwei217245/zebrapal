@@ -24,9 +24,8 @@ public class SimplePredictableTask extends AbstractWorkTask {
         setTasktype(TaskType.PREDICTABLE);
     }
 
-    public SimplePredictableTask(TaskContext taskContext, TaskState taskstate, String taskname,
+    public SimplePredictableTask(TaskState taskstate, String taskname,
             String taskowner, IAtomOperation atomOperation, Date createDate) {
-        setTaskContext(taskContext);
         setTaskState(taskstate);
         setTaskName(taskname);
         setTaskOwner(taskowner);

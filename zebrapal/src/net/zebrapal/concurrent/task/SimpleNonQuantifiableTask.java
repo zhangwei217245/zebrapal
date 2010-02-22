@@ -24,9 +24,8 @@ public class SimpleNonQuantifiableTask extends AbstractWorkTask{
         setTasktype(TaskType.NONQUANTIFIABLE);
     }
 
-    public SimpleNonQuantifiableTask (TaskContext taskContext,TaskState taskstate,String taskname,
+    public SimpleNonQuantifiableTask (TaskState taskstate,String taskname,
             String taskowner,IAtomOperation atomOperation,Date createDate){
-        setTaskContext(taskContext);
         setTaskState(taskstate);
         setTaskName(taskname);
         setTaskOwner(taskowner);

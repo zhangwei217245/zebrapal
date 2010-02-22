@@ -41,4 +41,10 @@ public interface IAtomOperation extends Serializable{
      * @param dataMap
      */
     public void setDataMap(ConcurrentMap dataMap);
+
+    /**
+     * 
+     * @return
+     */
+    public ConcurrentMap getDataMap();
 }

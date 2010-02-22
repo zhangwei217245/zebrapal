@@ -1,7 +1,6 @@
 package net.zebrapal.concurrent.task;
 
 import java.util.Date;
-import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
 import net.zebrapal.concurrent.listener.TaskPersistenceListener;
@@ -13,7 +12,6 @@ import net.zebrapal.concurrent.task.atom.IAtomOperation;
  */
 public class SimpleWorkTaskFactory {
     private TaskType taskType;
-    private TaskContext taskContext;
     private String taskName;
     private String taskOwner;
     private IAtomOperation atomOperation;
@@ -29,9 +27,7 @@ public class SimpleWorkTaskFactory {
     }
 
     public void checkFields(){
-        if(taskContext == null){
-            throw new NullPointerException("taskContext cannot be null");
-        }
+        
         if(taskName == null||taskName.length()==0){
             if(atomOperation!=null){
                 taskName = atomOperation.getClass().getCanonicalName()+"_"+System.currentTimeMillis();
@@ -53,17 +49,17 @@ public class SimpleWorkTaskFactory {
         checkFields();
         AbstractWorkTask awt = null;
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            awt = new SimpleQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleQuantifiableTask(TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            awt = new SimplePredictableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimplePredictableTask(TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            awt = new SimpleNonQuantifiableTask(taskContext, TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleNonQuantifiableTask(TaskState.RESTORED, taskName, taskOwner, atomOperation, createDate);
             awt.setCompleteCount(completeCount);
             awt.setFailedCount(failedCount);
             awt.setTotalCount(totalCount);
@@ -78,11 +74,11 @@ public class SimpleWorkTaskFactory {
         checkFields();
         AbstractWorkTask awt = null;
         if(TaskType.QUANTIFIABLE.equals(this.taskType)){
-            awt = new SimpleQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleQuantifiableTask(TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if(TaskType.PREDICTABLE.equals(this.taskType)){
-            awt = new SimplePredictableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimplePredictableTask(TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }else if (TaskType.NONQUANTIFIABLE.equals(this.taskType)){
-            awt = new SimpleNonQuantifiableTask(taskContext, TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
+            awt = new SimpleNonQuantifiableTask(TaskState.CREATED, taskName, taskOwner, atomOperation, createDate);
         }
         if(awt!=null){
             awt.addObserver(new TaskPersistenceListener());
@@ -90,14 +86,7 @@ public class SimpleWorkTaskFactory {
         return awt;
     }
 
-    /**
-     * @param taskContext the taskContext to set
-     * @return
-     */
-    public SimpleWorkTaskFactory setTaskContext(TaskContext taskContext) {
-        this.taskContext = taskContext;
-        return this;
-    }
+    
 
     /**
      * @param taskName the taskName to set
