@@ -7,7 +7,6 @@ package net.zebrapal.concurrent.task;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Observable;
-import java.util.concurrent.TimeUnit;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
 import net.zebrapal.concurrent.enumrations.TaskType;
@@ -20,6 +19,16 @@ import net.zebrapal.concurrent.task.disc.ITaskDetail;
  * @author X-Spirit
  */
 public abstract class AbstractWorkTask extends Observable implements IWorkTask, Serializable {
+
+    private long startTimeMills=System.currentTimeMillis();
+    private long lastTimeMills;
+    private long duration;
+    private int lastCompleteCount=0;
+    private double currentSpeed;
+    private double averageSpeed;
+
+    private double maxSpeed;
+    private double minSpeed=-1.0;
 
     private TaskContext taskContext;
     private TaskState taskState = TaskState.CREATED;
@@ -60,11 +69,15 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
                 getAtomOperation().skip(completeCount+failedCount);
                 setTaskState(TaskState.RUNNING);
             }
-            long startTime = System.currentTimeMillis();
+            startTimeMills = System.currentTimeMillis();
+            lastTimeMills = startTimeMills;
+            //calcSpeed();
             doExecute();
-            System.out.println("Task Executed Elasped: "+(System.currentTimeMillis()-startTime)+" milliseconds.");
+            duration = System.currentTimeMillis()-startTimeMills;
+            System.out.println("Task Executed Elasped: "+duration+" milliseconds.");
             setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
+            calcSpeed();
             setTaskState(TaskState.CRASHED);
             e.printStackTrace();
         } finally {
@@ -73,18 +86,101 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             } catch (AtomException ex) {
                 ex.printStackTrace();
             }
+
             super.setChanged();
             notifyObservers();
-            /*try {
-            System.out.println("Getting the Task Result");
-            Object obj = getTaskContext().getTaskController().cancelTask(this);
-            System.out.println(obj);
-            } catch (Exception e) {
-            e.printStackTrace();
-            }*/
+
+
         }
 
     }
+
+    public void calcSpeed(){
+        if(isRunningState()){
+            long passedMills = System.currentTimeMillis()-lastTimeMills;
+            int passedCount = completeCount-lastCompleteCount;
+            currentSpeed = (double)passedCount*1000/passedMills;
+
+            if(currentSpeed>maxSpeed){
+                maxSpeed = currentSpeed;
+            }
+
+            if(minSpeed<=0){
+                minSpeed = currentSpeed;
+            }
+            if(currentSpeed<minSpeed){
+                minSpeed = currentSpeed;
+            }
+
+            duration = System.currentTimeMillis()-startTimeMills;
+            if(duration==Double.NaN||duration<=0){
+                duration = 1;
+            }
+            averageSpeed = (double)completeCount*1000/duration;
+        }
+        
+
+    }
+
+    protected void updateTaskProgressByInterval(AbstractWorkTask task) {
+        if(task.isRunningState()){
+            completeCount++;
+            
+        }
+        if (completeCount % getTaskContext().getPersistInterval() == 0) {
+            calcSpeed();
+            
+
+            super.setChanged();
+            notifyObservers();
+
+            lastTimeMills = System.currentTimeMillis();
+            lastCompleteCount = completeCount;
+            calcSpeed();
+        }
+    }
+
+    /**
+     * check the TaskState and do the operation accordingly.
+     * CRASHED and FINISHED will not be set during this decision
+     * @return
+     */
+    public boolean isRunningState() {
+        //boolean b = true;
+        if (taskState.equals(TaskState.SLEEP)) {
+            return true;
+        } else if (taskState.equals(TaskState.HIBERNATE)) {
+            return false;
+        } else if (taskState.equals(TaskState.CANCELLED)) {
+            return false;
+        } else if (taskState.equals(TaskState.CRASHED)) {
+            return false;
+        } else if (taskState.equals(TaskState.FINISHED)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isAutoRestorable() {
+        if (taskState.equals(TaskState.SLEEP)) {
+            return true;
+        } else if (taskState.equals(TaskState.HIBERNATE)) {
+            return true;
+        } else if (taskState.equals(TaskState.CANCELLED)) {
+            return false;
+        } else if (taskState.equals(TaskState.CRASHED)) {
+            return false;
+        } else if (taskState.equals(TaskState.FINISHED)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return tasktype + "_" + getTaskName() + " @ " + taskState + " : " + completeCount + " Completed";
+    }
+
 
     public TaskContext getTaskContext() {
         return this.taskContext;
@@ -158,41 +254,24 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
         this.failedCount = failedCount;
     }
 
-    /**
-     * check the TaskState and do the operation accordingly.
-     * CRASHED and FINISHED will not be set during this decision
-     * @return
-     */
-    public boolean isRunningState() {
-        //boolean b = true;
-        if (taskState.equals(TaskState.SLEEP)) {
-            return true;
-        } else if (taskState.equals(TaskState.HIBERNATE)) {
-            return false;
-        } else if (taskState.equals(TaskState.CANCELLED)) {
-            return false;
-        } else if (taskState.equals(TaskState.CRASHED)) {
-            return false;
-        } else if (taskState.equals(TaskState.FINISHED)) {
-            return false;
-        }
-        return true;
+
+    public long getStartTimeMills() {
+        return startTimeMills;
     }
 
-    public boolean isAutoRestorable() {
-        if (taskState.equals(TaskState.SLEEP)) {
-            return true;
-        } else if (taskState.equals(TaskState.HIBERNATE)) {
-            return true;
-        } else if (taskState.equals(TaskState.CANCELLED)) {
-            return false;
-        } else if (taskState.equals(TaskState.CRASHED)) {
-            return false;
-        } else if (taskState.equals(TaskState.FINISHED)) {
-            return false;
-        }
-        return true;
+    public void setStartTimeMills(long startTimeMills) {
+        this.startTimeMills = startTimeMills;
     }
+
+    public long getLastTimeMills() {
+        return lastTimeMills;
+    }
+
+    public void setLastTimeMills(long lastTimeMills) {
+        this.lastTimeMills = lastTimeMills;
+    }
+
+    
 
     /**
      * @return the taskOwner
@@ -267,19 +346,68 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
 
     
 
-    protected void updateTaskProgressByInterval(AbstractWorkTask task) {
-        if(task.isRunningState()){
-            completeCount++;
-        }
-        if (completeCount % getTaskContext().getPersistInterval() == 0) {
-            //getTaskContext().getTaskPersistManager().updateTaskInfo(task);
-            super.setChanged();
-            notifyObservers();
-        }
+    /**
+     * @return the lastCompleteCount
+     */
+    public int getLastCompleteCount() {
+        return lastCompleteCount;
     }
 
-    @Override
-    public String toString() {
-        return tasktype + "_" + getTaskName() + " @ " + taskState + " : " + completeCount + " Completed";
+    /**
+     * @param lastCompleteCount the lastCompleteCount to set
+     */
+    public void setLastCompleteCount(int lastCompleteCount) {
+        this.lastCompleteCount = lastCompleteCount;
     }
+
+    /**
+     * @return the currentSpeed
+     */
+    public double getCurrentSpeed() {
+        
+        currentSpeed = (currentSpeed==Double.NaN||currentSpeed<=0)?0:currentSpeed;
+        return currentSpeed;
+    }
+
+    /**
+     * @param currentSpeed the currentSpeed to set
+     */
+    public void setCurrentSpeed(double currentSpeed) {
+        this.currentSpeed = currentSpeed;
+    }
+
+    public double getMaxSpeed() {
+        return maxSpeed>0?maxSpeed:0;
+    }
+
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
+    public double getMinSpeed() {
+        return minSpeed;
+    }
+
+    public void setMinSpeed(double minSpeed) {
+        this.minSpeed = minSpeed;
+    }
+
+    public long getDuration() {
+        duration = duration<=0?1:duration;
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public double getAverageSpeed() {
+        averageSpeed = (averageSpeed==Double.NaN||averageSpeed<=0)?0:averageSpeed;
+        return averageSpeed;
+    }
+
+    public void setAverageSpeed(double averageSpeed) {
+        this.averageSpeed = averageSpeed;
+    }
+    
 }
