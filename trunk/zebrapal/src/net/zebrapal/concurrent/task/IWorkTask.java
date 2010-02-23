@@ -5,6 +5,7 @@
 
 package net.zebrapal.concurrent.task;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import net.zebrapal.concurrent.TaskContext;
 import net.zebrapal.concurrent.enumrations.TaskState;
@@ -19,6 +20,16 @@ import net.zebrapal.concurrent.task.disc.ITaskDetail;
 public interface IWorkTask extends Runnable{
     
     public TaskContext getTaskContext();
+
+    public double getCurrentSpeed();
+    public double getMaxSpeed();
+    public double getMinSpeed();
+
+    public long getDuration();
+    public double getAverageSpeed();
+
+    public void calcSpeed();
+    
 
     public int getFailedCount();
 

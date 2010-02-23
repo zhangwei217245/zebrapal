@@ -13,8 +13,8 @@ import net.zebrapal.concurrent.enumrations.TaskState;
  * @author X-Spirit
  */
 public abstract class AbstractAtomOperation implements IAtomOperation{
-    
-    protected transient ConcurrentMap dataMap;
+    private static final long serialVersionUID = 3918433236694420975L;
+    protected ConcurrentMap dataMap;
 
     protected int totalCount;
 
