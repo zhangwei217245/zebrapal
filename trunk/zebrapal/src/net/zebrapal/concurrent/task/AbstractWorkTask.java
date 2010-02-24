@@ -71,13 +71,10 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             }
             startTimeMills = System.currentTimeMillis();
             lastTimeMills = startTimeMills;
-            //calcSpeed();
             doExecute();
-            duration = System.currentTimeMillis()-startTimeMills;
             System.out.println("Task Executed Elasped: "+duration+" milliseconds.");
             setTaskState(TaskState.FINISHED);
         } catch (Exception e) {
-            calcSpeed();
             setTaskState(TaskState.CRASHED);
             e.printStackTrace();
         } finally {
@@ -86,7 +83,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             } catch (AtomException ex) {
                 ex.printStackTrace();
             }
-
+            calcSpeed();
             super.setChanged();
             notifyObservers();
 
@@ -96,9 +93,12 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     }
 
     public void calcSpeed(){
-        if(isRunningState()){
+        if(true){
             long passedMills = System.currentTimeMillis()-lastTimeMills;
             int passedCount = completeCount-lastCompleteCount;
+            if((!isRunningState())&&passedMills<1){
+                passedMills = 1;
+            }
             currentSpeed = (double)passedCount*1000/passedMills;
 
             if(currentSpeed>maxSpeed){
@@ -113,7 +113,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             }
 
             duration = System.currentTimeMillis()-startTimeMills;
-            if(duration==Double.NaN||duration<=0){
+            if((!isRunningState())&&duration<1){
                 duration = 1;
             }
             averageSpeed = (double)completeCount*1000/duration;
