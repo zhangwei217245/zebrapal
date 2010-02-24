@@ -86,7 +86,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
             calcSpeed();
             super.setChanged();
             notifyObservers();
-
+            getTaskContext().getWorkerMap().remove(this);
 
         }
 
@@ -364,8 +364,6 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
      * @return the currentSpeed
      */
     public double getCurrentSpeed() {
-        
-        currentSpeed = (currentSpeed==Double.NaN||currentSpeed<=0)?0:currentSpeed;
         return currentSpeed;
     }
 
@@ -377,7 +375,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     }
 
     public double getMaxSpeed() {
-        return maxSpeed>0?maxSpeed:0;
+        return maxSpeed;
     }
 
     public void setMaxSpeed(double maxSpeed) {
@@ -393,7 +391,7 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     }
 
     public long getDuration() {
-        duration = duration<=0?1:duration;
+        duration = duration<1?1:duration;
         return duration;
     }
 
@@ -402,7 +400,6 @@ public abstract class AbstractWorkTask extends Observable implements IWorkTask, 
     }
 
     public double getAverageSpeed() {
-        averageSpeed = (averageSpeed==Double.NaN||averageSpeed<=0)?0:averageSpeed;
         return averageSpeed;
     }
 
