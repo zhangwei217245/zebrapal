@@ -14,6 +14,7 @@ import net.zebrapal.concurrent.task.IWorkTask;
  * @author X-Spirit
  */
 public interface ITaskPersistenceManager {
+    public String getQueryStatement();
     public void init(Properties prop);
     public void createTaskInfo(IWorkTask task);
     public void updateTaskInfo(IWorkTask task);

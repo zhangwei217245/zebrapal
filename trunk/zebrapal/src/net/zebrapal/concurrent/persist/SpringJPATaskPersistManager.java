@@ -14,6 +14,8 @@ import net.zebrapal.concurrent.task.IWorkTask;
  * @author X-Spirit
  */
 public class SpringJPATaskPersistManager implements ITaskPersistenceManager{
+    private String queryStatement;
+
 
     public void init(Properties prop) {
         System.out.println("JPATaskPersistManager is initializing....");
@@ -45,5 +47,14 @@ public class SpringJPATaskPersistManager implements ITaskPersistenceManager{
     public void close() {
         System.out.println("close this persist manager");
     }
+
+    public String getQueryStatement() {
+        return queryStatement;
+    }
+
+    public void setQueryStatement(String queryStatement) {
+        this.queryStatement = queryStatement;
+    }
+    
 
 }
