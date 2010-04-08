@@ -16,4 +16,5 @@ public class ZebrapalPropertyKeys {
     public static final String KEY_PERSISTENCE_MANAGER_CLASS="zebrapal.persistenceManagerClass";
     public static final String KEY_TASK_RESTORE_QUERY="zebrapal.restoreTask.query";
     public static final String KEY_TASK_PERSIST_INTERVAL="zebrapal.task.persist.interval";
+    public static final String KEY_TASK_PERSIST_FOLDER="zebrapal.task.persist.folder";
 }
